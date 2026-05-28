@@ -6,14 +6,20 @@
   <title>Quintet</title>
   <style>
     :root {
-      --bg: #11130f;
-      --ink: #fff8ea;
-      --muted: #cfc4b1;
-      --line: rgba(255, 255, 255, 0.16);
-      --panel: rgba(19, 22, 17, 0.86);
+      --bg: #1c2028;
+      --panel: #111827;
+      --panel-2: #151d2c;
+      --tile: #04070d;
+      --ink: #f8f7f1;
+      --muted: #aeb5c4;
+      --line: rgba(255, 255, 255, 0.38);
+      --soft-line: rgba(255, 255, 255, 0.18);
+      --card: #34385f;
+      --card-2: #3c4068;
       --gold: #f1c75b;
-      --green: #75c893;
-      --shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+      --green: #74c69d;
+      --red: #ff7a7a;
+      --shadow: 0 24px 72px rgba(0, 0, 0, 0.42);
     }
 
     * {
@@ -24,8 +30,8 @@
       margin: 0;
       min-height: 100vh;
       background:
-        linear-gradient(120deg, rgba(117, 200, 147, 0.1), transparent 36%),
-        linear-gradient(180deg, #191d15 0%, #11130f 100%);
+        radial-gradient(circle at 72% -10%, rgba(22, 41, 78, 0.8), transparent 34%),
+        linear-gradient(180deg, #1d222b 0%, #171b23 100%);
       color: var(--ink);
       font-family: "Segoe UI", "Noto Sans KR", Arial, sans-serif;
       letter-spacing: 0;
@@ -36,23 +42,25 @@
     }
 
     .app {
-      width: min(1440px, calc(100vw - 28px));
+      width: min(1600px, calc(100vw - 32px));
+      min-height: 100vh;
       margin: 0 auto;
-      padding: 20px 0 26px;
+      padding: 24px 0 30px;
       display: grid;
-      gap: 14px;
+      grid-template-rows: auto 1fr;
+      gap: 18px;
     }
 
-    .hero {
-      min-height: 132px;
+    .top {
+      min-height: 110px;
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 16px;
+      gap: 18px;
       align-items: end;
-      padding: 18px 20px;
-      border: 1px solid var(--line);
+      padding: 18px 24px;
+      border: 1px solid var(--soft-line);
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.045);
+      background: rgba(255, 255, 255, 0.035);
       box-shadow: var(--shadow);
     }
 
@@ -61,235 +69,286 @@
       font-size: 12px;
       font-weight: 900;
       text-transform: uppercase;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(42px, 7vw, 82px);
-      line-height: 0.95;
+      font-size: clamp(56px, 7vw, 104px);
+      line-height: 0.88;
+      font-weight: 300;
+      letter-spacing: 0;
     }
 
     .subtitle {
-      max-width: 780px;
-      margin-top: 9px;
+      max-width: 760px;
+      margin-top: 12px;
       color: var(--muted);
       font-size: 15px;
-      line-height: 1.48;
+      line-height: 1.45;
     }
 
     .score {
       display: grid;
-      grid-template-columns: repeat(2, 92px);
-      gap: 8px;
+      grid-template-columns: repeat(2, 104px);
+      gap: 10px;
     }
 
     .metric {
-      min-height: 72px;
-      border: 1px solid var(--line);
+      min-height: 76px;
+      border: 1px solid var(--soft-line);
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.07);
       display: grid;
       place-items: center;
       text-align: center;
-      padding: 8px;
+      background: rgba(255, 255, 255, 0.05);
     }
 
     .metric small {
       display: block;
       color: var(--muted);
       font-size: 11px;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
     }
 
     .metric strong {
-      font-size: 28px;
+      font-size: 29px;
+      line-height: 1;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(500px, 0.9fr) minmax(500px, 0.92fr);
-      gap: 14px;
-      align-items: start;
+      grid-template-columns: minmax(560px, 0.84fr) minmax(620px, 1fr);
+      gap: 24px;
+      align-items: stretch;
     }
 
-    .stage,
-    .game {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .stage {
-      display: grid;
-      gap: 0;
-    }
-
-    .main-image {
+    .visual-zone {
+      min-height: 760px;
       position: relative;
-      min-height: 460px;
-      max-height: 460px;
-      background: #f3e0cf;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.02);
       overflow: hidden;
     }
 
-    .main-image img {
-      width: 100%;
-      height: 100%;
-      min-height: 460px;
-      max-height: 460px;
-      object-fit: contain;
-      display: block;
-    }
-
-    .main-image::after {
+    .visual-zone::before {
       content: "";
       position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.68));
+      inset: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
       pointer-events: none;
     }
 
-    .caption {
+    .image-card {
       position: absolute;
-      left: 18px;
-      right: 18px;
-      bottom: 16px;
-      z-index: 1;
-      display: grid;
-      gap: 8px;
+      overflow: hidden;
+      border: 6px solid rgba(255, 255, 255, 0.42);
+      border-radius: 34px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+        #02040a;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.36);
+      transition: transform 0.22s ease, border-color 0.22s ease, filter 0.22s ease;
     }
 
-    .caption h2 {
-      margin: 0;
-      font-size: clamp(30px, 4vw, 50px);
-      line-height: 1;
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+    .image-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0;
+      filter: saturate(0.75) brightness(0.82);
+      transition: opacity 0.32s ease, filter 0.32s ease;
     }
 
-    .caption p {
-      max-width: 720px;
-      margin: 0;
-      color: rgba(255, 255, 255, 0.84);
-      line-height: 1.45;
-      font-size: 14px;
+    .image-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.06), transparent 35%),
+        #03050b;
+      opacity: 1;
+      transition: opacity 0.28s ease;
     }
 
-    .legend {
-      padding: 14px 16px;
-      display: grid;
-      gap: 10px;
-      border-top: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.04);
+    .image-card.revealed {
+      border-color: rgba(255, 255, 255, 0.58);
+      transform: translateY(-3px);
     }
 
-    .legend-title {
-      color: var(--gold);
-      font-weight: 900;
+    .image-card.revealed img {
+      opacity: 1;
+      filter: saturate(1) brightness(1);
+    }
+
+    .image-card.revealed::after {
+      opacity: 0;
+    }
+
+    .word-badge {
+      position: absolute;
+      left: 14px;
+      bottom: 12px;
+      z-index: 2;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: rgba(7, 10, 18, 0.74);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      color: var(--ink);
       font-size: 13px;
-      text-transform: uppercase;
+      font-weight: 900;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
     }
 
-    .legend p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.5;
-      font-size: 14px;
+    .image-card.revealed .word-badge {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    .game {
-      padding: 16px;
+    .image-card.know {
+      left: 5%;
+      top: 4%;
+      width: 42%;
+      height: 35%;
+    }
+
+    .image-card.think {
+      right: 5%;
+      top: 4%;
+      width: 42%;
+      height: 35%;
+    }
+
+    .image-card.wonder {
+      left: 31%;
+      top: 30%;
+      width: 38%;
+      height: 37%;
+      z-index: 3;
+    }
+
+    .image-card.imagine {
+      left: 5%;
+      bottom: 4%;
+      width: 42%;
+      height: 35%;
+    }
+
+    .image-card.picture {
+      right: 5%;
+      bottom: 4%;
+      width: 42%;
+      height: 35%;
+    }
+
+    .game-panel {
+      min-height: 760px;
+      border: 3px solid rgba(255, 255, 255, 0.42);
+      border-radius: 34px;
+      background: rgba(18, 27, 45, 0.84);
+      padding: 28px;
       display: grid;
-      gap: 12px;
-      min-height: 646px;
+      grid-template-rows: auto 1fr auto auto;
+      gap: 22px;
+      box-shadow: var(--shadow);
     }
 
     .message {
-      min-height: 64px;
-      border: 1px solid rgba(241, 199, 91, 0.38);
+      min-height: 70px;
+      border: 1px solid rgba(241, 199, 91, 0.36);
       border-radius: 8px;
-      background: rgba(241, 199, 91, 0.09);
+      background: rgba(241, 199, 91, 0.08);
       color: #f7e7bc;
       line-height: 1.45;
-      padding: 12px 13px;
+      padding: 14px 15px;
+      display: grid;
+      align-items: center;
     }
 
     .word-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 7px;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 18px 14px;
+      align-content: center;
     }
 
     .card {
-      min-height: 58px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.08);
+      min-height: 66px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-radius: 16px;
+      background: linear-gradient(180deg, var(--card-2), var(--card));
       color: var(--ink);
+      font-size: 17px;
       font-weight: 900;
-      font-size: 15px;
       cursor: pointer;
-      transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: transform 0.13s ease, border-color 0.13s ease, background 0.13s ease;
     }
 
     .card:hover {
       transform: translateY(-2px);
-      border-color: rgba(241, 199, 91, 0.68);
+      border-color: rgba(241, 199, 91, 0.7);
     }
 
     .card.selected {
-      background: rgba(241, 199, 91, 0.22);
       border-color: var(--gold);
-      color: #fff3c7;
+      background: linear-gradient(180deg, #6d6434, #4f4828);
     }
 
     .card.correct {
-      background: var(--green);
       border-color: transparent;
-      color: #07120b;
+      background: var(--green);
+      color: #06120b;
       pointer-events: none;
+    }
+
+    .card.wrong {
+      border-color: rgba(255, 122, 122, 0.8);
+      background: linear-gradient(180deg, #5d3541, #43252f);
     }
 
     .controls {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 9px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
     }
 
     .control {
-      min-height: 46px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.07);
+      min-height: 58px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 18px;
+      background: rgba(8, 13, 27, 0.76);
       color: var(--ink);
-      font-weight: 900;
+      font-size: 26px;
+      font-weight: 300;
       cursor: pointer;
+      text-transform: uppercase;
     }
 
     .control.primary {
-      background: var(--gold);
-      color: #151006;
-      border-color: transparent;
+      background: rgba(8, 13, 27, 0.88);
     }
 
     .control:disabled {
-      opacity: 0.45;
+      opacity: 0.4;
       cursor: not-allowed;
     }
 
     .answer {
+      min-height: 118px;
       border: 1px solid rgba(117, 200, 147, 0.38);
       border-radius: 8px;
-      background: rgba(117, 200, 147, 0.1);
+      background: rgba(117, 200, 147, 0.08);
       padding: 13px;
-      min-height: 116px;
       display: grid;
       gap: 9px;
     }
 
-    .answer h3 {
+    .answer h2 {
       margin: 0;
       font-size: 18px;
     }
@@ -311,16 +370,20 @@
       padding: 7px 9px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--line);
+      border: 1px solid var(--soft-line);
       color: #f9ecd6;
       font-size: 13px;
       font-weight: 800;
     }
 
-    @media (max-width: 1100px) {
-      .layout,
-      .hero {
+    @media (max-width: 1200px) {
+      .layout {
         grid-template-columns: 1fr;
+      }
+
+      .visual-zone,
+      .game-panel {
+        min-height: 720px;
       }
     }
 
@@ -329,63 +392,93 @@
         width: min(100vw - 18px, 680px);
       }
 
+      .top {
+        grid-template-columns: 1fr;
+      }
+
       .score,
       .controls {
         grid-template-columns: 1fr 1fr;
+      }
+
+      .visual-zone {
+        min-height: 820px;
+      }
+
+      .image-card.know,
+      .image-card.think,
+      .image-card.wonder,
+      .image-card.imagine,
+      .image-card.picture {
+        position: relative;
+        left: auto;
+        right: auto;
+        top: auto;
+        bottom: auto;
+        width: calc(100% - 28px);
+        height: 150px;
+        margin: 14px;
       }
 
       .word-grid {
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .main-image,
-      .main-image img {
-        min-height: 430px;
-        max-height: 430px;
+      .control {
+        font-size: 20px;
       }
     }
   </style>
 </head>
 <body>
   <main class="app">
-    <section class="hero">
+    <section class="top">
       <div>
         <div class="eyebrow">Casual Nerdy Word Game</div>
         <h1>Quintet</h1>
-        <div class="subtitle">하나의 이미지가 품은 의미군을 보고, 25개 단어 중 같은 결의 5개를 찾는 nerdy 퍼즐.</div>
+        <div class="subtitle">25개 단어 중 같은 의미군 5개를 찾기. 정답 단어를 누르면 왼쪽 이미지 슬롯이 하나씩 열린다.</div>
       </div>
       <div class="score">
-        <div class="metric"><div><small>MODE</small><strong>1/1</strong></div></div>
-        <div class="metric"><div><small>FOUND</small><strong><span id="found">0</span>/1</strong></div></div>
+        <div class="metric"><div><small>REVEALED</small><strong><span id="revealedCount">0</span>/5</strong></div></div>
+        <div class="metric"><div><small>PICKS</small><strong><span id="pickCount">0</span>/5</strong></div></div>
       </div>
     </section>
 
     <section class="layout">
-      <div class="stage">
-        <div class="main-image">
-          <img alt="Cognitive Word Cell comic collage" src="assets/cognitive-word-cell.png" />
-          <div class="caption">
-            <h2>Cognitive Word Cell</h2>
-            <p>한 장의 코믹 이미지가 know, think, wonder, imagine, picture를 각각 다른 패널로 표현.</p>
-          </div>
+      <section class="visual-zone" aria-label="word image reveal area">
+        <div class="image-card know" data-image-card="know">
+          <img src="assets/know.png" alt="know visual clue" />
+          <div class="word-badge">know</div>
         </div>
-        <div class="legend">
-          <div class="legend-title">How to read the image</div>
-          <p>책과 전구, 턱을 괸 표정, 물음표와 구름, 판타지 말풍선, 이젤과 그림처럼 머릿속 움직임을 시각 단서로 읽기.</p>
+        <div class="image-card think" data-image-card="think">
+          <img src="assets/think.png" alt="think visual clue" />
+          <div class="word-badge">think</div>
         </div>
-      </div>
+        <div class="image-card wonder" data-image-card="wonder">
+          <img src="assets/wonder.png" alt="wonder visual clue" />
+          <div class="word-badge">wonder</div>
+        </div>
+        <div class="image-card imagine" data-image-card="imagine">
+          <img src="assets/imagine.png" alt="imagine visual clue" />
+          <div class="word-badge">imagine</div>
+        </div>
+        <div class="image-card picture" data-image-card="picture">
+          <img src="assets/picture.png" alt="picture visual clue" />
+          <div class="word-badge">picture</div>
+        </div>
+      </section>
 
-      <aside class="game">
-        <div class="message" id="message">25개 단어 중 이미지가 표현하는 Cognitive Verbs 5개를 고르세요.</div>
+      <aside class="game-panel">
+        <div class="message" id="message">Cognitive Verbs 5개를 찾아보세요. 맞는 단어를 누르면 이미지가 하나씩 열림.</div>
         <div class="word-grid" id="wordGrid"></div>
         <div class="controls">
-          <button class="control primary" id="submit" disabled>Submit 5</button>
+          <button class="control primary" id="submit" disabled>Submit</button>
           <button class="control" id="hint">Hint</button>
           <button class="control" id="reset">Reset</button>
         </div>
         <div class="answer">
-          <h3 id="answerTitle">Word Cell 대기</h3>
-          <p id="answerReason">정답을 맞히면 그림 속 패널과 단어의 관계가 열림.</p>
+          <h2 id="answerTitle">Word Cell 대기</h2>
+          <p id="answerReason">정답 단어를 누를 때마다 왼쪽 이미지가 열림. 5개를 모두 찾고 Submit.</p>
           <div class="chips" id="answerChips"></div>
         </div>
       </aside>
@@ -403,7 +496,7 @@
         "remember", "dream", "draw", "paint", "read"
       ],
       hint: "말하기나 보기 동사가 아니라, 머릿속에서 이해·판단·상상·이미지를 만드는 동사만 고르기.",
-      reason: "상단 책과 전구는 know, 턱을 괸 인물은 think, 물음표와 구름은 wonder, 판타지 말풍선은 imagine, 이젤과 그림은 picture를 시각화."
+      reason: "책에서 이해가 열리는 know, 생각에 잠긴 think, 물음표와 우주를 바라보는 wonder, 꿈속 세계의 imagine, 붓으로 장면을 만드는 picture."
     };
 
     const wordGrid = document.getElementById("wordGrid");
@@ -411,14 +504,17 @@
     const submit = document.getElementById("submit");
     const hint = document.getElementById("hint");
     const reset = document.getElementById("reset");
-    const found = document.getElementById("found");
+    const revealedCount = document.getElementById("revealedCount");
+    const pickCount = document.getElementById("pickCount");
     const answerTitle = document.getElementById("answerTitle");
     const answerReason = document.getElementById("answerReason");
     const answerChips = document.getElementById("answerChips");
 
     let selected = new Set();
-    let solved = false;
+    let revealed = new Set();
+    let lockedWrong = new Set();
     let cardWords = [];
+    let solved = false;
 
     submit.addEventListener("click", submitAnswer);
     hint.addEventListener("click", () => {
@@ -428,12 +524,15 @@
 
     function start() {
       selected = new Set();
+      revealed = new Set();
+      lockedWrong = new Set();
       solved = false;
       cardWords = shuffle(target.options);
-      message.textContent = "25개 단어 중 이미지가 표현하는 Cognitive Verbs 5개를 고르세요.";
+      message.textContent = "Cognitive Verbs 5개를 찾아보세요. 맞는 단어를 누르면 이미지가 하나씩 열림.";
       answerTitle.textContent = "Word Cell 대기";
-      answerReason.textContent = "정답을 맞히면 그림 속 패널과 단어의 관계가 열림.";
+      answerReason.textContent = "정답 단어를 누를 때마다 왼쪽 이미지가 열림. 5개를 모두 찾고 Submit.";
       answerChips.innerHTML = "";
+      document.querySelectorAll("[data-image-card]").forEach(card => card.classList.remove("revealed"));
       renderCards();
     }
 
@@ -445,32 +544,48 @@
         button.className = "card";
         button.textContent = word;
         if (selected.has(word)) button.classList.add("selected");
-        if (solved && target.words.includes(word)) button.classList.add("correct");
+        if (revealed.has(word)) button.classList.add("correct");
+        if (lockedWrong.has(word)) button.classList.add("wrong");
         button.addEventListener("click", () => toggleWord(word));
         wordGrid.appendChild(button);
       });
-      submit.disabled = selected.size !== 5 || solved;
-      found.textContent = solved ? 1 : 0;
+      revealedCount.textContent = revealed.size;
+      pickCount.textContent = selected.size;
+      submit.disabled = revealed.size !== 5 || solved;
     }
 
     function toggleWord(word) {
-      if (solved) return;
-      if (selected.has(word)) selected.delete(word);
-      else if (selected.size < 5) selected.add(word);
+      if (solved || revealed.has(word)) return;
+      if (!selected.has(word) && selected.size >= 5) {
+        message.textContent = "이미 5개를 골랐음. 다른 단어를 빼고 다시 선택.";
+        return;
+      }
+      if (target.words.includes(word)) {
+        selected.add(word);
+        revealed.add(word);
+        revealImage(word);
+        message.textContent = `${word} opened. ${5 - revealed.size} left.`;
+      } else if (selected.has(word)) {
+        selected.delete(word);
+        lockedWrong.delete(word);
+      } else if (selected.size < 5) {
+        selected.add(word);
+      }
       renderCards();
     }
 
+    function revealImage(word) {
+      const card = document.querySelector(`[data-image-card="${word}"]`);
+      if (card) card.classList.add("revealed");
+    }
+
     function submitAnswer() {
-      const allCorrect = target.words.every(word => selected.has(word));
-      if (allCorrect) {
+      if (revealed.size === 5) {
         solved = true;
-        message.textContent = `정답: ${target.words.join(" · ")}`;
+        message.textContent = `Quintet complete: ${target.words.join(" · ")}`;
         answerTitle.textContent = "Solved Word Cell";
         answerReason.textContent = target.reason;
         renderAnswerChips();
-      } else {
-        const correctCount = target.words.filter(word => selected.has(word)).length;
-        message.textContent = `${correctCount}/5개가 맞음. 그림의 시각 단서와 단어의 의미 범위를 다시 비교.`;
       }
       renderCards();
     }
