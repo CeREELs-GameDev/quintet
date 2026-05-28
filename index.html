@@ -190,27 +190,6 @@
       filter: saturate(1.14) brightness(1.07);
     }
 
-    .image-card.wrong-pulse {
-      border-color: var(--red);
-      animation: imageShake 0.28s ease;
-    }
-
-    .word-badge {
-      position: absolute;
-      left: 14px;
-      bottom: 12px;
-      z-index: 2;
-      padding: 6px 9px;
-      border-radius: 999px;
-      background: rgba(7, 10, 18, 0.74);
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      color: var(--ink);
-      font-size: 13px;
-      font-weight: 900;
-      opacity: 1;
-      transform: translateY(0);
-    }
-
     .image-card.know {
       left: 5%;
       top: 4%;
@@ -273,40 +252,57 @@
     .game-panel {
       min-height: 0;
       height: 100%;
+      position: relative;
       border: 3px solid rgba(255, 255, 255, 0.42);
       border-radius: 34px;
       background: rgba(18, 27, 45, 0.84);
       padding: clamp(14px, 1.7vw, 28px);
       display: grid;
-      grid-template-rows: auto 1fr auto auto;
-      gap: clamp(10px, 1.4vh, 22px);
+      grid-template-rows: minmax(0, 1fr) auto;
+      gap: clamp(16px, 2.2vh, 30px);
       box-shadow: var(--shadow);
     }
 
     .message {
-      min-height: clamp(48px, 7vh, 70px);
+      position: absolute;
+      top: clamp(10px, 1.3vw, 18px);
+      left: 50%;
+      z-index: 5;
+      width: max-content;
+      max-width: calc(100% - 36px);
+      min-height: 0;
       border: 1px solid rgba(241, 199, 91, 0.36);
       border-radius: 8px;
-      background: rgba(241, 199, 91, 0.08);
+      background: rgba(10, 15, 29, 0.92);
       color: #f7e7bc;
       line-height: 1.45;
-      padding: 14px 15px;
-      display: grid;
-      align-items: center;
+      padding: 9px 13px;
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.32);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -8px);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .message.visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
     }
 
     .word-grid {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: clamp(8px, 1.2vh, 18px) clamp(7px, 0.9vw, 14px);
-      align-content: center;
+      grid-template-rows: repeat(5, minmax(0, 1fr));
+      gap: clamp(10px, 1.55vh, 22px) clamp(8px, 1vw, 16px);
+      align-content: stretch;
       min-height: 0;
     }
 
     .card {
+      position: relative;
       min-height: 0;
+      width: 100%;
       height: 100%;
-      aspect-ratio: 2.65 / 1;
       border: 2px solid rgba(255, 255, 255, 0.35);
       border-radius: 16px;
       background: linear-gradient(180deg, var(--card-2), var(--card));
@@ -318,14 +314,22 @@
       transition: transform 0.13s ease, border-color 0.13s ease, background 0.13s ease;
     }
 
+    .card-label {
+      opacity: 1;
+      transition: opacity 0.16s ease;
+    }
+
     .card:hover {
       transform: translateY(-2px);
       border-color: rgba(241, 199, 91, 0.7);
     }
 
     .card.selected {
-      border-color: var(--gold);
-      background: linear-gradient(180deg, #6d6434, #4f4828);
+      border-color: rgba(255, 255, 255, 0.62);
+      background: linear-gradient(180deg, #242833, #171b24);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 0 0 2px rgba(255, 255, 255, 0.08);
     }
 
     .card.correct {
@@ -336,6 +340,22 @@
         0 0 0 3px rgba(241, 199, 91, 0.24),
         0 0 22px rgba(241, 199, 91, 0.62);
       animation: cardPop 0.45s ease;
+      pointer-events: none;
+    }
+
+    .card.hinted {
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .card.hinted::after {
+      content: "★";
+      position: absolute;
+      top: 5px;
+      right: 8px;
+      color: var(--gold);
+      font-size: 13px;
+      line-height: 1;
+      text-shadow: 0 0 10px rgba(241, 199, 91, 0.8);
       pointer-events: none;
     }
 
@@ -370,44 +390,6 @@
     .control:disabled {
       opacity: 0.4;
       cursor: not-allowed;
-    }
-
-    .answer {
-      min-height: clamp(82px, 13vh, 118px);
-      border: 1px solid rgba(117, 200, 147, 0.38);
-      border-radius: 8px;
-      background: rgba(117, 200, 147, 0.08);
-      padding: 13px;
-      display: grid;
-      gap: 9px;
-    }
-
-    .answer h2 {
-      margin: 0;
-      font-size: 18px;
-    }
-
-    .answer p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.46;
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-    }
-
-    .chip {
-      padding: 7px 9px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--soft-line);
-      color: #f9ecd6;
-      font-size: 13px;
-      font-weight: 800;
     }
 
     @media (max-width: 1200px) {
@@ -503,10 +485,10 @@
       <div>
         <div class="eyebrow">Casual Nerdy Word Game</div>
         <h1>Quintet</h1>
-        <div class="subtitle">25개 단어 중 같은 의미군 5개를 찾기. 5개를 모두 맞히면 그림 영역이 보상 영상으로 전환된다.</div>
+        <div class="subtitle">25개 단어 중 같은 의미군 5개를 고른 뒤 Submit. 정답이면 그림 영역이 보상 영상으로 전환된다.</div>
       </div>
       <div class="score">
-        <div class="metric"><div><small>MATCHED</small><strong><span id="matchedCount">0</span>/5</strong></div></div>
+        <div class="metric"><div><small>LIFE</small><strong><span id="lifeCount">5</span></strong></div></div>
         <div class="metric"><div><small>PICKS</small><strong><span id="pickCount">0</span>/5</strong></div></div>
       </div>
     </section>
@@ -516,40 +498,30 @@
         <div class="image-board">
           <div class="image-card know" data-image-card="know">
             <img src="assets/know.png" alt="know visual clue" />
-            <div class="word-badge">know</div>
-          </div>
-          <div class="image-card think" data-image-card="think">
-            <img src="assets/think.png" alt="think visual clue" />
-            <div class="word-badge">think</div>
-          </div>
-          <div class="image-card wonder" data-image-card="wonder">
-            <img src="assets/wonder.png" alt="wonder visual clue" />
-            <div class="word-badge">wonder</div>
-          </div>
-          <div class="image-card imagine" data-image-card="imagine">
-            <img src="assets/imagine.png" alt="imagine visual clue" />
-            <div class="word-badge">imagine</div>
-          </div>
-          <div class="image-card picture" data-image-card="picture">
-            <img src="assets/picture.png" alt="picture visual clue" />
-            <div class="word-badge">picture</div>
-          </div>
+        </div>
+        <div class="image-card think" data-image-card="think">
+          <img src="assets/think.png" alt="think visual clue" />
+        </div>
+        <div class="image-card wonder" data-image-card="wonder">
+          <img src="assets/wonder.png" alt="wonder visual clue" />
+        </div>
+        <div class="image-card imagine" data-image-card="imagine">
+          <img src="assets/imagine.png" alt="imagine visual clue" />
+        </div>
+        <div class="image-card picture" data-image-card="picture">
+          <img src="assets/picture.png" alt="picture visual clue" />
+        </div>
         </div>
         <video class="reward-video" id="rewardVideo" src="assets/reward.mp4" playsinline preload="auto"></video>
       </section>
 
       <aside class="game-panel">
-        <div class="message" id="message">Cognitive Verbs 5개를 찾아보세요. 정답 카드를 누르면 이미지와 카드가 함께 빛남.</div>
+        <div class="message" id="message" aria-live="polite"></div>
         <div class="word-grid" id="wordGrid"></div>
         <div class="controls">
           <button class="control primary" id="submit" disabled>Submit</button>
           <button class="control" id="hint">Hint</button>
           <button class="control" id="reset">Reset</button>
-        </div>
-        <div class="answer">
-          <h2 id="answerTitle">Word Cell 대기</h2>
-          <p id="answerReason">정답 카드는 잠기고, 오답 카드는 짧게 흔들림. 5개를 모두 찾고 Submit.</p>
-          <div class="chips" id="answerChips"></div>
         </div>
       </aside>
     </section>
@@ -574,23 +546,24 @@
     const submit = document.getElementById("submit");
     const hint = document.getElementById("hint");
     const reset = document.getElementById("reset");
-    const matchedCount = document.getElementById("matchedCount");
+    const lifeCount = document.getElementById("lifeCount");
     const pickCount = document.getElementById("pickCount");
-    const answerTitle = document.getElementById("answerTitle");
-    const answerReason = document.getElementById("answerReason");
-    const answerChips = document.getElementById("answerChips");
     const visualZone = document.getElementById("visualZone");
     const rewardVideo = document.getElementById("rewardVideo");
 
     let selected = new Set();
     let matched = new Set();
     let lockedWrong = new Set();
+    let submittedCombos = new Set();
+    let lives = 5;
+    let revealedHints = new Set();
     let cardWords = [];
     let solved = false;
+    let messageTimer = null;
 
     submit.addEventListener("click", submitAnswer);
     hint.addEventListener("click", () => {
-      message.textContent = target.hint;
+      setMessage(target.hint, 3600);
     });
     reset.addEventListener("click", start);
 
@@ -598,12 +571,12 @@
       selected = new Set();
       matched = new Set();
       lockedWrong = new Set();
+      submittedCombos = new Set();
+      lives = 5;
+      revealedHints = new Set();
       solved = false;
       cardWords = shuffle(target.options);
-      message.textContent = "Cognitive Verbs 5개를 찾아보세요. 정답 카드를 누르면 이미지와 카드가 함께 빛남.";
-      answerTitle.textContent = "Word Cell 대기";
-      answerReason.textContent = "정답 카드는 잠기고, 오답 카드는 짧게 흔들림. 5개를 모두 찾고 Submit.";
-      answerChips.innerHTML = "";
+      hideMessage();
       visualZone.classList.remove("rewarding");
       rewardVideo.pause();
       rewardVideo.currentTime = 0;
@@ -619,36 +592,36 @@
         const button = document.createElement("button");
         button.type = "button";
         button.className = "card";
-        button.textContent = word;
+        button.dataset.word = word;
+        button.innerHTML = `<span class="card-label">${word}</span>`;
         if (selected.has(word)) button.classList.add("selected");
+        if (revealedHints.has(word)) button.classList.add("hinted");
         if (matched.has(word)) button.classList.add("correct");
         if (lockedWrong.has(word)) button.classList.add("wrong");
         button.addEventListener("click", () => toggleWord(word));
         wordGrid.appendChild(button);
       });
-      matchedCount.textContent = matched.size;
+      lifeCount.textContent = lives;
       pickCount.textContent = selected.size;
-      submit.disabled = matched.size !== 5 || solved;
+      submit.disabled = selected.size !== 5 || solved;
     }
 
     function toggleWord(word) {
-      if (solved || matched.has(word)) return;
-      if (!selected.has(word) && selected.size >= 5 && target.words.includes(word)) {
-        message.textContent = "이미 5개를 골랐음. 다른 단어를 빼고 다시 선택.";
+      if (solved) return;
+      if (!selected.has(word) && selected.size >= 5) {
+        setMessage("이미 5개를 골랐음. 다른 단어를 빼고 다시 선택.", 1600);
         return;
       }
-      if (target.words.includes(word)) {
-        selected.add(word);
-        matched.add(word);
-        matchImage(word);
-        message.textContent = `${word} matched. ${5 - matched.size} left.`;
-      } else if (selected.has(word)) {
+      lockedWrong.clear();
+      if (selected.has(word)) {
         selected.delete(word);
-        lockedWrong.delete(word);
+      } else if (selected.size < 5) {
+        selected.add(word);
+      }
+      if (selected.size === 5) {
+        setMessage("5개 선택 완료. Submit으로 확인.", 1400);
       } else {
-        lockedWrong.add(word);
-        wrongPulse();
-        message.textContent = `${word} is not in this Quintet.`;
+        hideMessage();
       }
       renderCards();
     }
@@ -661,46 +634,66 @@
       card.classList.add("matched");
     }
 
-    function wrongPulse() {
-      const cards = document.querySelectorAll("[data-image-card]");
-      cards.forEach(card => {
-        card.classList.remove("wrong-pulse");
-        void card.offsetWidth;
-        card.classList.add("wrong-pulse");
-      });
-      window.setTimeout(() => {
-        cards.forEach(card => card.classList.remove("wrong-pulse"));
-      }, 320);
-    }
-
     function submitAnswer() {
-      if (matched.size === 5) {
+      const selectedWords = [...selected];
+      const comboKey = selectedWords.slice().sort().join("|");
+      if (submittedCombos.has(comboKey)) {
+        setMessage("Already tried. Pick a different set.", 1800);
+        lockedWrong = new Set(selectedWords);
+        renderCards();
+        window.setTimeout(() => {
+          lockedWrong.clear();
+          renderCards();
+        }, 420);
+        return;
+      }
+      submittedCombos.add(comboKey);
+      const allCorrect = target.words.every(word => selected.has(word));
+      if (allCorrect) {
         solved = true;
-        message.textContent = `Quintet complete: ${target.words.join(" · ")}`;
-        answerTitle.textContent = "Solved Word Cell";
-        answerReason.textContent = target.reason;
-        renderAnswerChips();
-        playReward();
+        matched = new Set(target.words);
+        target.words.forEach(matchImage);
+        setMessage("Correct. Quintet found.", 1800);
+        window.setTimeout(playReward, 1500);
+      } else {
+        lives = Math.max(0, lives - 1);
+        lockedWrong = new Set(selectedWords);
+        if (lives === 0) revealNextHint();
+        setMessage(lives === 0
+          ? `${revealedHints.size}/5 answer card revealed.`
+          : `Not quite. ${lives} life left.`, 1800);
+        window.setTimeout(() => {
+          lockedWrong.clear();
+          renderCards();
+        }, 420);
       }
       renderCards();
+    }
+
+    function revealNextHint() {
+      const nextHint = target.words.find(word => !revealedHints.has(word));
+      if (!nextHint) return;
+      revealedHints.add(nextHint);
     }
 
     function playReward() {
       visualZone.classList.add("rewarding");
       rewardVideo.currentTime = 0;
       rewardVideo.play().catch(() => {
-        message.textContent = "Quintet complete. Tap the video area if playback is blocked.";
+        setMessage("Quintet complete. Tap the video area if playback is blocked.", 2400);
       });
     }
 
-    function renderAnswerChips() {
-      answerChips.innerHTML = "";
-      target.words.forEach(word => {
-        const chip = document.createElement("span");
-        chip.className = "chip";
-        chip.textContent = word;
-        answerChips.appendChild(chip);
-      });
+    function setMessage(text, duration = 1600) {
+      window.clearTimeout(messageTimer);
+      message.textContent = text;
+      message.classList.add("visible");
+      messageTimer = window.setTimeout(hideMessage, duration);
+    }
+
+    function hideMessage() {
+      window.clearTimeout(messageTimer);
+      message.classList.remove("visible");
     }
 
     function shuffle(list) {
