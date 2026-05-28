@@ -66,45 +66,16 @@
 
     h1 {
       margin: 0;
-      font-size: clamp(38px, 6vw, 74px);
+      font-size: clamp(42px, 7vw, 82px);
       line-height: 0.95;
     }
 
     .subtitle {
-      max-width: 760px;
+      max-width: 780px;
       margin-top: 9px;
       color: var(--muted);
       font-size: 15px;
       line-height: 1.48;
-    }
-
-    .hero-side {
-      display: grid;
-      gap: 9px;
-      justify-items: end;
-    }
-
-    .mode-switch {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 7px;
-    }
-
-    .mode-btn {
-      min-height: 38px;
-      padding: 0 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.07);
-      color: var(--ink);
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .mode-btn.active {
-      background: var(--gold);
-      color: #151006;
-      border-color: transparent;
     }
 
     .score {
@@ -137,14 +108,13 @@
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(520px, 0.96fr) minmax(460px, 0.82fr);
+      grid-template-columns: minmax(500px, 0.9fr) minmax(500px, 0.92fr);
       gap: 14px;
       align-items: start;
     }
 
     .stage,
-    .game,
-    .scene-list {
+    .game {
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--panel);
@@ -152,34 +122,26 @@
       overflow: hidden;
     }
 
+    .stage {
+      display: grid;
+      gap: 0;
+    }
+
     .main-image {
       position: relative;
-      min-height: 520px;
-      background: #080a08;
+      min-height: 460px;
+      max-height: 460px;
+      background: #f3e0cf;
       overflow: hidden;
     }
 
     .main-image img {
       width: 100%;
       height: 100%;
-      min-height: 520px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .main-image.portrait img {
+      min-height: 460px;
+      max-height: 460px;
       object-fit: contain;
-      background: #f3e0cf;
-    }
-
-    .main-image.portrait {
-      min-height: 460px;
-      max-height: 460px;
-    }
-
-    .main-image.portrait img {
-      min-height: 460px;
-      max-height: 460px;
+      display: block;
     }
 
     .main-image::after {
@@ -202,7 +164,7 @@
 
     .caption h2 {
       margin: 0;
-      font-size: clamp(28px, 4vw, 48px);
+      font-size: clamp(30px, 4vw, 50px);
       line-height: 1;
       text-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
     }
@@ -215,56 +177,26 @@
       font-size: 14px;
     }
 
-    .scene-list {
+    .legend {
+      padding: 14px 16px;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 0;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
     }
 
-    .scene-list.hidden {
-      display: none;
-    }
-
-    .scene-tab {
-      min-height: 112px;
-      border: 0;
-      border-right: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--ink);
-      cursor: pointer;
-      padding: 0;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .scene-tab:last-child {
-      border-right: 0;
-    }
-
-    .scene-tab img {
-      width: 100%;
-      height: 112px;
-      object-fit: cover;
-      display: block;
-      opacity: 0.62;
-      transition: opacity 0.14s ease, transform 0.14s ease;
-    }
-
-    .scene-tab span {
-      position: absolute;
-      left: 9px;
-      right: 9px;
-      bottom: 8px;
-      font-size: 12px;
+    .legend-title {
+      color: var(--gold);
       font-weight: 900;
-      text-align: left;
-      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.78);
+      font-size: 13px;
+      text-transform: uppercase;
     }
 
-    .scene-tab.active img,
-    .scene-tab:hover img {
-      opacity: 1;
-      transform: scale(1.04);
+    .legend p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
     }
 
     .game {
@@ -287,28 +219,19 @@
     .word-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 9px;
-    }
-
-    .word-grid.hunt {
       gap: 7px;
     }
 
     .card {
-      min-height: 86px;
+      min-height: 58px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.08);
       color: var(--ink);
       font-weight: 900;
-      font-size: 18px;
+      font-size: 15px;
       cursor: pointer;
       transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
-    }
-
-    .word-grid.hunt .card {
-      min-height: 58px;
-      font-size: 15px;
     }
 
     .card:hover {
@@ -399,10 +322,6 @@
       .hero {
         grid-template-columns: 1fr;
       }
-
-      .hero-side {
-        justify-items: start;
-      }
     }
 
     @media (max-width: 720px) {
@@ -411,23 +330,18 @@
       }
 
       .score,
-      .controls,
-      .mode-switch {
+      .controls {
         grid-template-columns: 1fr 1fr;
       }
 
-      .scene-list,
       .word-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .word-grid.hunt {
         grid-template-columns: repeat(2, 1fr);
       }
 
       .main-image,
       .main-image img {
         min-height: 430px;
+        max-height: 430px;
       }
     }
   </style>
@@ -438,43 +352,40 @@
       <div>
         <div class="eyebrow">Casual Nerdy Word Game</div>
         <h1>Synapse Shuffle</h1>
-        <div class="subtitle" id="subtitle">이미지 속 단서와 단어의 숨은 관계를 찾아 5개씩 맞히는 가벼운 추리형 단어 퍼즐.</div>
+        <div class="subtitle">하나의 이미지가 품은 의미군을 보고, 25개 단어 중 같은 결의 5개를 찾는 nerdy 퍼즐.</div>
       </div>
-      <div class="hero-side">
-        <div class="mode-switch">
-          <button class="mode-btn active" id="sceneMode">Scene Clue</button>
-          <button class="mode-btn" id="huntMode">Word Cell Hunt</button>
-        </div>
-        <div class="score">
-          <div class="metric"><div><small id="metricOneLabel">SCENE</small><strong><span id="sceneNum">1</span>/<span id="sceneTotal">5</span></strong></div></div>
-          <div class="metric"><div><small>FOUND</small><strong><span id="found">0</span>/<span id="foundTotal">5</span></strong></div></div>
-        </div>
+      <div class="score">
+        <div class="metric"><div><small>MODE</small><strong>1/1</strong></div></div>
+        <div class="metric"><div><small>FOUND</small><strong><span id="found">0</span>/1</strong></div></div>
       </div>
     </section>
 
     <section class="layout">
       <div class="stage">
-        <div class="main-image" id="imageFrame">
-          <img id="sceneImage" alt="선택된 소설 장면" src="assets/garden-door-cell.png" />
+        <div class="main-image">
+          <img alt="Cognitive Word Cell comic collage" src="assets/cognitive-word-cell.png" />
           <div class="caption">
-            <h2 id="sceneTitle">The Hidden Door</h2>
-            <p id="sceneDescription">문, 열쇠, 자물쇠, 손잡이, 문턱이 한 컷 안에서 모두 보이는 오브젝트 중심 장면.</p>
+            <h2>Cognitive Word Cell</h2>
+            <p>한 장의 코믹 이미지가 know, think, wonder, imagine, picture를 각각 다른 패널로 표현.</p>
           </div>
         </div>
-        <div class="scene-list" id="sceneList"></div>
+        <div class="legend">
+          <div class="legend-title">How to read the image</div>
+          <p>책과 전구, 턱을 괸 표정, 물음표와 구름, 판타지 말풍선, 이젤과 그림처럼 머릿속 움직임을 시각 단서로 읽기.</p>
+        </div>
       </div>
 
       <aside class="game">
-        <div class="message" id="message">그림과 가장 촘촘하게 연결되는 단어 5개를 고르세요.</div>
+        <div class="message" id="message">25개 단어 중 이미지가 표현하는 Cognitive Verbs 5개를 고르세요.</div>
         <div class="word-grid" id="wordGrid"></div>
         <div class="controls">
           <button class="control primary" id="submit" disabled>Submit 5</button>
           <button class="control" id="hint">Hint</button>
-          <button class="control" id="next">Next Scene</button>
+          <button class="control" id="reset">Reset</button>
         </div>
         <div class="answer">
           <h3 id="answerTitle">Word Cell 대기</h3>
-          <p id="answerReason">정답을 맞히면 이 장면과 단어군의 관계가 열림.</p>
+          <p id="answerReason">정답을 맞히면 그림 속 패널과 단어의 관계가 열림.</p>
           <div class="chips" id="answerChips"></div>
         </div>
       </aside>
@@ -482,58 +393,7 @@
   </main>
 
   <script>
-    const scenes = [
-      {
-        title: "The Hidden Door",
-        image: "assets/garden-door-cell.png",
-        description: "문, 열쇠, 자물쇠, 손잡이, 문턱이 한 컷 안에서 모두 보이는 오브젝트 중심 장면.",
-        words: ["door", "key", "lock", "handle", "threshold"],
-        distractors: ["teapot", "cyclone", "map", "moon", "listen"],
-        hint: "손이 닿는 입구 주변 사물만 고르기.",
-        reason: "그림 속 행동은 문을 여는 순간. 손이 닿는 사물과 경계선이 단어군의 중심."
-      },
-      {
-        title: "The Tea Table",
-        image: "assets/tea-table.png",
-        description: "티테이블 위 사물이 한눈에 보이는 장면. 기묘하지만 단어 단서는 직접적.",
-        words: ["teapot", "cup", "saucer", "spoon", "jam"],
-        distractors: ["key", "whirl", "lantern", "circle", "root"],
-        hint: "테이블 위에서 집어 들거나 따를 수 있는 사물만 고르기.",
-        reason: "테이블 위 물건 자체가 단어 카드. 그림을 훑는 것만으로도 사물 관계가 생김."
-      },
-      {
-        title: "The Cyclone",
-        image: "assets/cyclone-house.png",
-        description: "회오리바람이 집과 사물을 들어 올리는 장면. 움직임 동사를 이미지화.",
-        words: ["cyclone", "whirl", "lift", "spin", "toss"],
-        distractors: ["saucer", "island", "door", "listen", "bloom"],
-        hint: "바람이 만드는 움직임만 고르기.",
-        reason: "이 장면은 사물보다 움직임이 핵심. 소용돌이, 들어 올림, 회전, 던져짐이 한 컷에 묶임."
-      },
-      {
-        title: "The Treasure Map",
-        image: "assets/treasure-map.png",
-        description: "배 안의 테이블 위에 지도, 나침반, 상자, 섬, 등불이 모인 탐험 장면.",
-        words: ["map", "compass", "chest", "island", "lantern"],
-        distractors: ["handle", "cup", "moon", "call", "petal"],
-        hint: "탐험을 시작하게 만드는 물건만 고르기.",
-        reason: "보물찾기 장면의 도구 묶음. 지도가 목표를, 나침반과 등불이 이동을, 상자와 섬이 보상을 만듦."
-      },
-      {
-        title: "The Moon Council",
-        image: "assets/jungle-council.png",
-        description: "달빛 아래 원형으로 모인 회의 장면. 구도와 몸짓이 단어 관계를 만든다.",
-        words: ["moon", "circle", "listen", "call", "gather"],
-        distractors: ["threshold", "jam", "spin", "map", "fresh"],
-        hint: "하늘, 배치, 소리, 반응, 모임을 함께 보기.",
-        reason: "이 장면은 사물보다 상황 구조가 단어군. 달, 원형 배치, 부름, 듣기, 모임이 동시에 보임."
-      }
-    ];
-
-    const hunt = {
-      title: "Cognitive Word Cell",
-      image: "assets/cognitive-word-cell.png",
-      description: "한 장의 코믹 이미지가 know, think, wonder, imagine, picture를 각각 다른 패널로 표현.",
+    const target = {
       words: ["know", "think", "wonder", "imagine", "picture"],
       options: [
         "know", "think", "wonder", "imagine", "picture",
@@ -546,128 +406,38 @@
       reason: "상단 책과 전구는 know, 턱을 괸 인물은 think, 물음표와 구름은 wonder, 판타지 말풍선은 imagine, 이젤과 그림은 picture를 시각화."
     };
 
-    const imageFrame = document.getElementById("imageFrame");
-    const sceneImage = document.getElementById("sceneImage");
-    const sceneTitle = document.getElementById("sceneTitle");
-    const sceneDescription = document.getElementById("sceneDescription");
-    const sceneList = document.getElementById("sceneList");
     const wordGrid = document.getElementById("wordGrid");
     const message = document.getElementById("message");
     const submit = document.getElementById("submit");
-    const hintBtn = document.getElementById("hint");
-    const next = document.getElementById("next");
+    const hint = document.getElementById("hint");
+    const reset = document.getElementById("reset");
     const found = document.getElementById("found");
-    const foundTotal = document.getElementById("foundTotal");
-    const sceneNum = document.getElementById("sceneNum");
-    const sceneTotal = document.getElementById("sceneTotal");
-    const metricOneLabel = document.getElementById("metricOneLabel");
     const answerTitle = document.getElementById("answerTitle");
     const answerReason = document.getElementById("answerReason");
     const answerChips = document.getElementById("answerChips");
-    const subtitle = document.getElementById("subtitle");
-    const sceneMode = document.getElementById("sceneMode");
-    const huntMode = document.getElementById("huntMode");
 
-    let mode = "scene";
-    let active = 0;
     let selected = new Set();
-    let solved = new Set();
-    let huntSolved = false;
+    let solved = false;
     let cardWords = [];
 
-    sceneMode.addEventListener("click", () => setMode("scene"));
-    huntMode.addEventListener("click", () => setMode("hunt"));
     submit.addEventListener("click", submitAnswer);
-    hintBtn.addEventListener("click", showHint);
-    next.addEventListener("click", () => {
-      if (mode === "scene") setScene((active + 1) % scenes.length);
-      else resetHunt();
+    hint.addEventListener("click", () => {
+      message.textContent = target.hint;
     });
+    reset.addEventListener("click", start);
 
-    function init() {
-      renderSceneTabs();
-      setMode("scene");
-    }
-
-    function setMode(nextMode) {
-      mode = nextMode;
+    function start() {
       selected = new Set();
-      sceneMode.classList.toggle("active", mode === "scene");
-      huntMode.classList.toggle("active", mode === "hunt");
-      sceneList.classList.toggle("hidden", mode === "hunt");
-      wordGrid.classList.toggle("hunt", mode === "hunt");
-      next.textContent = mode === "scene" ? "Next Scene" : "Reset Hunt";
-      submit.textContent = mode === "scene" ? "Submit 5" : "Submit 5";
-
-      if (mode === "scene") {
-        imageFrame.classList.remove("portrait");
-        subtitle.textContent = "이미지 속 단서와 단어의 숨은 관계를 찾아 5개씩 맞히는 가벼운 추리형 단어 퍼즐.";
-        metricOneLabel.textContent = "SCENE";
-        sceneTotal.textContent = scenes.length;
-        foundTotal.textContent = scenes.length;
-        setScene(active);
-      } else {
-        imageFrame.classList.add("portrait");
-        subtitle.textContent = "하나의 이미지가 품은 의미군을 보고, 25개 단어 중 같은 결의 5개를 찾는 nerdy 퍼즐 모드.";
-        metricOneLabel.textContent = "MODE";
-        sceneNum.textContent = "2";
-        sceneTotal.textContent = "2";
-        foundTotal.textContent = "1";
-        renderHunt();
-      }
-    }
-
-    function renderSceneTabs() {
-      sceneList.innerHTML = "";
-      scenes.forEach((scene, index) => {
-        const button = document.createElement("button");
-        button.className = "scene-tab";
-        button.type = "button";
-        button.innerHTML = `<img src="${scene.image}" alt="${scene.title} thumbnail"><span>${scene.title}</span>`;
-        button.addEventListener("click", () => setScene(index));
-        sceneList.appendChild(button);
-      });
-    }
-
-    function setScene(index) {
-      if (mode !== "scene") return;
-      active = index;
-      selected = new Set();
-      const scene = scenes[active];
-      sceneImage.src = scene.image;
-      sceneTitle.textContent = scene.title;
-      sceneDescription.textContent = scene.description;
-      sceneNum.textContent = active + 1;
-      message.textContent = "그림과 가장 촘촘하게 연결되는 단어 5개를 고르세요.";
-      answerTitle.textContent = solved.has(active) ? "Solved Word Cell" : "Word Cell 대기";
-      answerReason.textContent = solved.has(active) ? scene.reason : "정답을 맞히면 이 장면과 단어군의 관계가 열림.";
-      cardWords = shuffle([...scene.words, ...scene.distractors]);
-      renderCards();
-      renderAnswerChips();
-      updateTabs();
-    }
-
-    function renderHunt() {
-      sceneImage.src = hunt.image;
-      sceneTitle.textContent = hunt.title;
-      sceneDescription.textContent = hunt.description;
+      solved = false;
+      cardWords = shuffle(target.options);
       message.textContent = "25개 단어 중 이미지가 표현하는 Cognitive Verbs 5개를 고르세요.";
-      answerTitle.textContent = huntSolved ? "Solved Word Cell" : "Word Cell 대기";
-      answerReason.textContent = huntSolved ? hunt.reason : "정답을 맞히면 그림 속 패널과 단어의 관계가 열림.";
-      cardWords = shuffle(hunt.options);
+      answerTitle.textContent = "Word Cell 대기";
+      answerReason.textContent = "정답을 맞히면 그림 속 패널과 단어의 관계가 열림.";
+      answerChips.innerHTML = "";
       renderCards();
-      renderAnswerChips();
-    }
-
-    function resetHunt() {
-      selected = new Set();
-      huntSolved = false;
-      renderHunt();
     }
 
     function renderCards() {
-      const targetWords = mode === "scene" ? scenes[active].words : hunt.words;
-      const currentSolved = mode === "scene" ? solved.has(active) : huntSolved;
       wordGrid.innerHTML = "";
       cardWords.forEach(word => {
         const button = document.createElement("button");
@@ -675,60 +445,43 @@
         button.className = "card";
         button.textContent = word;
         if (selected.has(word)) button.classList.add("selected");
-        if (currentSolved && targetWords.includes(word)) button.classList.add("correct");
+        if (solved && target.words.includes(word)) button.classList.add("correct");
         button.addEventListener("click", () => toggleWord(word));
         wordGrid.appendChild(button);
       });
-      submit.disabled = selected.size !== 5 || currentSolved;
-      found.textContent = mode === "scene" ? solved.size : (huntSolved ? 1 : 0);
-    }
-
-    function renderAnswerChips() {
-      answerChips.innerHTML = "";
-      const words = mode === "scene" ? scenes[active].words : hunt.words;
-      const currentSolved = mode === "scene" ? solved.has(active) : huntSolved;
-      if (!currentSolved) return;
-      words.forEach(word => {
-        const chip = document.createElement("span");
-        chip.className = "chip";
-        chip.textContent = word;
-        answerChips.appendChild(chip);
-      });
+      submit.disabled = selected.size !== 5 || solved;
+      found.textContent = solved ? 1 : 0;
     }
 
     function toggleWord(word) {
-      const currentSolved = mode === "scene" ? solved.has(active) : huntSolved;
-      if (currentSolved) return;
+      if (solved) return;
       if (selected.has(word)) selected.delete(word);
       else if (selected.size < 5) selected.add(word);
       renderCards();
     }
 
     function submitAnswer() {
-      const target = mode === "scene" ? scenes[active] : hunt;
       const allCorrect = target.words.every(word => selected.has(word));
       if (allCorrect) {
-        if (mode === "scene") solved.add(active);
-        else huntSolved = true;
+        solved = true;
         message.textContent = `정답: ${target.words.join(" · ")}`;
         answerTitle.textContent = "Solved Word Cell";
         answerReason.textContent = target.reason;
+        renderAnswerChips();
       } else {
         const correctCount = target.words.filter(word => selected.has(word)).length;
         message.textContent = `${correctCount}/5개가 맞음. 그림의 시각 단서와 단어의 의미 범위를 다시 비교.`;
       }
       renderCards();
-      renderAnswerChips();
-      updateTabs();
     }
 
-    function showHint() {
-      message.textContent = mode === "scene" ? scenes[active].hint : hunt.hint;
-    }
-
-    function updateTabs() {
-      [...sceneList.children].forEach((tab, index) => {
-        tab.classList.toggle("active", index === active);
+    function renderAnswerChips() {
+      answerChips.innerHTML = "";
+      target.words.forEach(word => {
+        const chip = document.createElement("span");
+        chip.className = "chip";
+        chip.textContent = word;
+        answerChips.appendChild(chip);
       });
     }
 
@@ -741,7 +494,7 @@
       return copy;
     }
 
-    init();
+    start();
   </script>
 </body>
 </html>
