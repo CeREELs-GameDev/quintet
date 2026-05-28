@@ -143,6 +143,18 @@
       pointer-events: none;
     }
 
+    .image-board {
+      position: absolute;
+      inset: 0;
+      transition: opacity 0.32s ease, transform 0.32s ease;
+    }
+
+    .visual-zone.rewarding .image-board {
+      opacity: 0;
+      transform: scale(0.96);
+      pointer-events: none;
+    }
+
     .image-card {
       position: absolute;
       overflow: hidden;
@@ -233,6 +245,29 @@
       bottom: 4%;
       width: 42%;
       height: 35%;
+    }
+
+    .reward-video {
+      position: absolute;
+      inset: 4%;
+      width: 92%;
+      height: 92%;
+      object-fit: contain;
+      border: 6px solid rgba(255, 255, 255, 0.46);
+      border-radius: 34px;
+      background: #02040a;
+      opacity: 0;
+      transform: scale(1.04);
+      pointer-events: none;
+      transition: opacity 0.34s ease, transform 0.34s ease;
+      box-shadow:
+        0 0 0 3px rgba(241, 199, 91, 0.18),
+        0 24px 72px rgba(0, 0, 0, 0.45);
+    }
+
+    .visual-zone.rewarding .reward-video {
+      opacity: 1;
+      transform: scale(1);
     }
 
     .game-panel {
@@ -468,7 +503,7 @@
       <div>
         <div class="eyebrow">Casual Nerdy Word Game</div>
         <h1>Quintet</h1>
-        <div class="subtitle">25개 단어 중 같은 의미군 5개를 찾기. 정답 카드를 누르면 매칭 이미지가 빛나고, 틀린 카드는 즉시 흔들린다.</div>
+        <div class="subtitle">25개 단어 중 같은 의미군 5개를 찾기. 5개를 모두 맞히면 그림 영역이 보상 영상으로 전환된다.</div>
       </div>
       <div class="score">
         <div class="metric"><div><small>MATCHED</small><strong><span id="matchedCount">0</span>/5</strong></div></div>
@@ -477,27 +512,30 @@
     </section>
 
     <section class="layout">
-      <section class="visual-zone" aria-label="word image reveal area">
-        <div class="image-card know" data-image-card="know">
-          <img src="assets/know.png" alt="know visual clue" />
-          <div class="word-badge">know</div>
+      <section class="visual-zone" id="visualZone" aria-label="word image area">
+        <div class="image-board">
+          <div class="image-card know" data-image-card="know">
+            <img src="assets/know.png" alt="know visual clue" />
+            <div class="word-badge">know</div>
+          </div>
+          <div class="image-card think" data-image-card="think">
+            <img src="assets/think.png" alt="think visual clue" />
+            <div class="word-badge">think</div>
+          </div>
+          <div class="image-card wonder" data-image-card="wonder">
+            <img src="assets/wonder.png" alt="wonder visual clue" />
+            <div class="word-badge">wonder</div>
+          </div>
+          <div class="image-card imagine" data-image-card="imagine">
+            <img src="assets/imagine.png" alt="imagine visual clue" />
+            <div class="word-badge">imagine</div>
+          </div>
+          <div class="image-card picture" data-image-card="picture">
+            <img src="assets/picture.png" alt="picture visual clue" />
+            <div class="word-badge">picture</div>
+          </div>
         </div>
-        <div class="image-card think" data-image-card="think">
-          <img src="assets/think.png" alt="think visual clue" />
-          <div class="word-badge">think</div>
-        </div>
-        <div class="image-card wonder" data-image-card="wonder">
-          <img src="assets/wonder.png" alt="wonder visual clue" />
-          <div class="word-badge">wonder</div>
-        </div>
-        <div class="image-card imagine" data-image-card="imagine">
-          <img src="assets/imagine.png" alt="imagine visual clue" />
-          <div class="word-badge">imagine</div>
-        </div>
-        <div class="image-card picture" data-image-card="picture">
-          <img src="assets/picture.png" alt="picture visual clue" />
-          <div class="word-badge">picture</div>
-        </div>
+        <video class="reward-video" id="rewardVideo" src="assets/reward.mp4" playsinline preload="auto"></video>
       </section>
 
       <aside class="game-panel">
@@ -541,6 +579,8 @@
     const answerTitle = document.getElementById("answerTitle");
     const answerReason = document.getElementById("answerReason");
     const answerChips = document.getElementById("answerChips");
+    const visualZone = document.getElementById("visualZone");
+    const rewardVideo = document.getElementById("rewardVideo");
 
     let selected = new Set();
     let matched = new Set();
@@ -564,6 +604,9 @@
       answerTitle.textContent = "Word Cell 대기";
       answerReason.textContent = "정답 카드는 잠기고, 오답 카드는 짧게 흔들림. 5개를 모두 찾고 Submit.";
       answerChips.innerHTML = "";
+      visualZone.classList.remove("rewarding");
+      rewardVideo.pause();
+      rewardVideo.currentTime = 0;
       document.querySelectorAll("[data-image-card]").forEach(card => {
         card.classList.remove("matched", "wrong-pulse");
       });
@@ -637,8 +680,17 @@
         answerTitle.textContent = "Solved Word Cell";
         answerReason.textContent = target.reason;
         renderAnswerChips();
+        playReward();
       }
       renderCards();
+    }
+
+    function playReward() {
+      visualZone.classList.add("rewarding");
+      rewardVideo.currentTime = 0;
+      rewardVideo.play().catch(() => {
+        message.textContent = "Quintet complete. Tap the video area if playback is blocked.";
+      });
     }
 
     function renderAnswerChips() {
