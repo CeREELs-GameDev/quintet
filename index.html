@@ -28,7 +28,8 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
       background:
         radial-gradient(circle at 72% -10%, rgba(22, 41, 78, 0.8), transparent 34%),
         linear-gradient(180deg, #1d222b 0%, #171b23 100%);
@@ -42,22 +43,22 @@
     }
 
     .app {
-      width: min(1600px, calc(100vw - 32px));
-      min-height: 100vh;
+      width: min(100vw - 24px, 1720px);
+      height: 100vh;
       margin: 0 auto;
-      padding: 24px 0 30px;
+      padding: clamp(10px, 1.25vw, 22px) 0;
       display: grid;
-      grid-template-rows: auto 1fr;
-      gap: 18px;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: clamp(10px, 1.1vw, 18px);
     }
 
     .top {
-      min-height: 110px;
+      min-height: 0;
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 18px;
       align-items: end;
-      padding: 18px 24px;
+      padding: clamp(12px, 1.2vw, 18px) clamp(14px, 1.5vw, 24px);
       border: 1px solid var(--soft-line);
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.035);
@@ -95,7 +96,7 @@
     }
 
     .metric {
-      min-height: 76px;
+      min-height: clamp(54px, 6.2vh, 76px);
       border: 1px solid var(--soft-line);
       border-radius: 8px;
       display: grid;
@@ -112,19 +113,21 @@
     }
 
     .metric strong {
-      font-size: 29px;
+      font-size: clamp(22px, 2vw, 29px);
       line-height: 1;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(560px, 0.84fr) minmax(620px, 1fr);
-      gap: 24px;
+      grid-template-columns: minmax(430px, 0.82fr) minmax(560px, 1fr);
+      gap: clamp(12px, 1.5vw, 24px);
       align-items: stretch;
+      min-height: 0;
     }
 
     .visual-zone {
-      min-height: 760px;
+      min-height: 0;
+      height: 100%;
       position: relative;
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.02);
@@ -143,13 +146,13 @@
     .image-card {
       position: absolute;
       overflow: hidden;
-      border: 6px solid rgba(255, 255, 255, 0.42);
+      border: clamp(3px, 0.36vw, 6px) solid rgba(255, 255, 255, 0.42);
       border-radius: 34px;
       background:
         linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
         #02040a;
       box-shadow: 0 24px 48px rgba(0, 0, 0, 0.36);
-      transition: transform 0.22s ease, border-color 0.22s ease, filter 0.22s ease;
+      transition: transform 0.22s ease, border-color 0.22s ease, filter 0.22s ease, box-shadow 0.22s ease;
     }
 
     .image-card img {
@@ -157,34 +160,27 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      opacity: 0;
-      filter: saturate(0.75) brightness(0.82);
-      transition: opacity 0.32s ease, filter 0.32s ease;
-    }
-
-    .image-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.06), transparent 35%),
-        #03050b;
       opacity: 1;
-      transition: opacity 0.28s ease;
+      filter: saturate(0.98) brightness(0.92);
+      transition: filter 0.32s ease, transform 0.32s ease;
     }
 
-    .image-card.revealed {
-      border-color: rgba(255, 255, 255, 0.58);
-      transform: translateY(-3px);
+    .image-card.matched {
+      border-color: var(--gold);
+      box-shadow:
+        0 0 0 3px rgba(241, 199, 91, 0.22),
+        0 0 26px rgba(241, 199, 91, 0.62),
+        0 24px 48px rgba(0, 0, 0, 0.36);
+      animation: imagePulse 0.72s ease;
     }
 
-    .image-card.revealed img {
-      opacity: 1;
-      filter: saturate(1) brightness(1);
+    .image-card.matched img {
+      filter: saturate(1.14) brightness(1.07);
     }
 
-    .image-card.revealed::after {
-      opacity: 0;
+    .image-card.wrong-pulse {
+      border-color: var(--red);
+      animation: imageShake 0.28s ease;
     }
 
     .word-badge {
@@ -199,12 +195,6 @@
       color: var(--ink);
       font-size: 13px;
       font-weight: 900;
-      opacity: 0;
-      transform: translateY(4px);
-      transition: opacity 0.22s ease, transform 0.22s ease;
-    }
-
-    .image-card.revealed .word-badge {
       opacity: 1;
       transform: translateY(0);
     }
@@ -246,19 +236,20 @@
     }
 
     .game-panel {
-      min-height: 760px;
+      min-height: 0;
+      height: 100%;
       border: 3px solid rgba(255, 255, 255, 0.42);
       border-radius: 34px;
       background: rgba(18, 27, 45, 0.84);
-      padding: 28px;
+      padding: clamp(14px, 1.7vw, 28px);
       display: grid;
       grid-template-rows: auto 1fr auto auto;
-      gap: 22px;
+      gap: clamp(10px, 1.4vh, 22px);
       box-shadow: var(--shadow);
     }
 
     .message {
-      min-height: 70px;
+      min-height: clamp(48px, 7vh, 70px);
       border: 1px solid rgba(241, 199, 91, 0.36);
       border-radius: 8px;
       background: rgba(241, 199, 91, 0.08);
@@ -272,17 +263,20 @@
     .word-grid {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 18px 14px;
+      gap: clamp(8px, 1.2vh, 18px) clamp(7px, 0.9vw, 14px);
       align-content: center;
+      min-height: 0;
     }
 
     .card {
-      min-height: 66px;
+      min-height: 0;
+      height: 100%;
+      aspect-ratio: 2.65 / 1;
       border: 2px solid rgba(255, 255, 255, 0.35);
       border-radius: 16px;
       background: linear-gradient(180deg, var(--card-2), var(--card));
       color: var(--ink);
-      font-size: 17px;
+      font-size: clamp(13px, 1vw, 17px);
       font-weight: 900;
       cursor: pointer;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -300,30 +294,35 @@
     }
 
     .card.correct {
-      border-color: transparent;
-      background: var(--green);
-      color: #06120b;
+      border-color: var(--gold);
+      background: linear-gradient(180deg, #f8d967, #d5a82d);
+      color: #111006;
+      box-shadow:
+        0 0 0 3px rgba(241, 199, 91, 0.24),
+        0 0 22px rgba(241, 199, 91, 0.62);
+      animation: cardPop 0.45s ease;
       pointer-events: none;
     }
 
     .card.wrong {
       border-color: rgba(255, 122, 122, 0.8);
       background: linear-gradient(180deg, #5d3541, #43252f);
+      animation: cardShake 0.28s ease;
     }
 
     .controls {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 28px;
+      gap: clamp(10px, 1.8vw, 28px);
     }
 
     .control {
-      min-height: 58px;
+      min-height: clamp(44px, 6.5vh, 58px);
       border: 1px solid rgba(255, 255, 255, 0.6);
       border-radius: 18px;
       background: rgba(8, 13, 27, 0.76);
       color: var(--ink);
-      font-size: 26px;
+      font-size: clamp(18px, 1.8vw, 26px);
       font-weight: 300;
       cursor: pointer;
       text-transform: uppercase;
@@ -339,7 +338,7 @@
     }
 
     .answer {
-      min-height: 118px;
+      min-height: clamp(82px, 13vh, 118px);
       border: 1px solid rgba(117, 200, 147, 0.38);
       border-radius: 8px;
       background: rgba(117, 200, 147, 0.08);
@@ -381,9 +380,18 @@
         grid-template-columns: 1fr;
       }
 
+      body {
+        overflow: auto;
+      }
+
+      .app {
+        height: auto;
+        min-height: 100vh;
+      }
+
       .visual-zone,
       .game-panel {
-        min-height: 720px;
+        min-height: 680px;
       }
     }
 
@@ -428,6 +436,30 @@
         font-size: 20px;
       }
     }
+
+    @keyframes cardPop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes cardShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    @keyframes imagePulse {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.025); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes imageShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
   </style>
 </head>
 <body>
@@ -436,10 +468,10 @@
       <div>
         <div class="eyebrow">Casual Nerdy Word Game</div>
         <h1>Quintet</h1>
-        <div class="subtitle">25개 단어 중 같은 의미군 5개를 찾기. 정답 단어를 누르면 왼쪽 이미지 슬롯이 하나씩 열린다.</div>
+        <div class="subtitle">25개 단어 중 같은 의미군 5개를 찾기. 정답 카드를 누르면 매칭 이미지가 빛나고, 틀린 카드는 즉시 흔들린다.</div>
       </div>
       <div class="score">
-        <div class="metric"><div><small>REVEALED</small><strong><span id="revealedCount">0</span>/5</strong></div></div>
+        <div class="metric"><div><small>MATCHED</small><strong><span id="matchedCount">0</span>/5</strong></div></div>
         <div class="metric"><div><small>PICKS</small><strong><span id="pickCount">0</span>/5</strong></div></div>
       </div>
     </section>
@@ -469,7 +501,7 @@
       </section>
 
       <aside class="game-panel">
-        <div class="message" id="message">Cognitive Verbs 5개를 찾아보세요. 맞는 단어를 누르면 이미지가 하나씩 열림.</div>
+        <div class="message" id="message">Cognitive Verbs 5개를 찾아보세요. 정답 카드를 누르면 이미지와 카드가 함께 빛남.</div>
         <div class="word-grid" id="wordGrid"></div>
         <div class="controls">
           <button class="control primary" id="submit" disabled>Submit</button>
@@ -478,7 +510,7 @@
         </div>
         <div class="answer">
           <h2 id="answerTitle">Word Cell 대기</h2>
-          <p id="answerReason">정답 단어를 누를 때마다 왼쪽 이미지가 열림. 5개를 모두 찾고 Submit.</p>
+          <p id="answerReason">정답 카드는 잠기고, 오답 카드는 짧게 흔들림. 5개를 모두 찾고 Submit.</p>
           <div class="chips" id="answerChips"></div>
         </div>
       </aside>
@@ -504,14 +536,14 @@
     const submit = document.getElementById("submit");
     const hint = document.getElementById("hint");
     const reset = document.getElementById("reset");
-    const revealedCount = document.getElementById("revealedCount");
+    const matchedCount = document.getElementById("matchedCount");
     const pickCount = document.getElementById("pickCount");
     const answerTitle = document.getElementById("answerTitle");
     const answerReason = document.getElementById("answerReason");
     const answerChips = document.getElementById("answerChips");
 
     let selected = new Set();
-    let revealed = new Set();
+    let matched = new Set();
     let lockedWrong = new Set();
     let cardWords = [];
     let solved = false;
@@ -524,15 +556,17 @@
 
     function start() {
       selected = new Set();
-      revealed = new Set();
+      matched = new Set();
       lockedWrong = new Set();
       solved = false;
       cardWords = shuffle(target.options);
-      message.textContent = "Cognitive Verbs 5개를 찾아보세요. 맞는 단어를 누르면 이미지가 하나씩 열림.";
+      message.textContent = "Cognitive Verbs 5개를 찾아보세요. 정답 카드를 누르면 이미지와 카드가 함께 빛남.";
       answerTitle.textContent = "Word Cell 대기";
-      answerReason.textContent = "정답 단어를 누를 때마다 왼쪽 이미지가 열림. 5개를 모두 찾고 Submit.";
+      answerReason.textContent = "정답 카드는 잠기고, 오답 카드는 짧게 흔들림. 5개를 모두 찾고 Submit.";
       answerChips.innerHTML = "";
-      document.querySelectorAll("[data-image-card]").forEach(card => card.classList.remove("revealed"));
+      document.querySelectorAll("[data-image-card]").forEach(card => {
+        card.classList.remove("matched", "wrong-pulse");
+      });
       renderCards();
     }
 
@@ -544,43 +578,60 @@
         button.className = "card";
         button.textContent = word;
         if (selected.has(word)) button.classList.add("selected");
-        if (revealed.has(word)) button.classList.add("correct");
+        if (matched.has(word)) button.classList.add("correct");
         if (lockedWrong.has(word)) button.classList.add("wrong");
         button.addEventListener("click", () => toggleWord(word));
         wordGrid.appendChild(button);
       });
-      revealedCount.textContent = revealed.size;
+      matchedCount.textContent = matched.size;
       pickCount.textContent = selected.size;
-      submit.disabled = revealed.size !== 5 || solved;
+      submit.disabled = matched.size !== 5 || solved;
     }
 
     function toggleWord(word) {
-      if (solved || revealed.has(word)) return;
-      if (!selected.has(word) && selected.size >= 5) {
+      if (solved || matched.has(word)) return;
+      if (!selected.has(word) && selected.size >= 5 && target.words.includes(word)) {
         message.textContent = "이미 5개를 골랐음. 다른 단어를 빼고 다시 선택.";
         return;
       }
       if (target.words.includes(word)) {
         selected.add(word);
-        revealed.add(word);
-        revealImage(word);
-        message.textContent = `${word} opened. ${5 - revealed.size} left.`;
+        matched.add(word);
+        matchImage(word);
+        message.textContent = `${word} matched. ${5 - matched.size} left.`;
       } else if (selected.has(word)) {
         selected.delete(word);
         lockedWrong.delete(word);
-      } else if (selected.size < 5) {
-        selected.add(word);
+      } else {
+        lockedWrong.add(word);
+        wrongPulse();
+        message.textContent = `${word} is not in this Quintet.`;
       }
       renderCards();
     }
 
-    function revealImage(word) {
+    function matchImage(word) {
       const card = document.querySelector(`[data-image-card="${word}"]`);
-      if (card) card.classList.add("revealed");
+      if (!card) return;
+      card.classList.remove("matched");
+      void card.offsetWidth;
+      card.classList.add("matched");
+    }
+
+    function wrongPulse() {
+      const cards = document.querySelectorAll("[data-image-card]");
+      cards.forEach(card => {
+        card.classList.remove("wrong-pulse");
+        void card.offsetWidth;
+        card.classList.add("wrong-pulse");
+      });
+      window.setTimeout(() => {
+        cards.forEach(card => card.classList.remove("wrong-pulse"));
+      }, 320);
     }
 
     function submitAnswer() {
-      if (revealed.size === 5) {
+      if (matched.size === 5) {
         solved = true;
         message.textContent = `Quintet complete: ${target.words.join(" · ")}`;
         answerTitle.textContent = "Solved Word Cell";
