@@ -159,6 +159,9 @@
 
     .image-card {
       position: absolute;
+      aspect-ratio: 585 / 1024;
+      height: 49%;
+      width: auto;
       overflow: hidden;
       border: clamp(3px, 0.36vw, 6px) solid rgba(255, 255, 255, 0.42);
       border-radius: 34px;
@@ -193,39 +196,39 @@
     }
 
     .image-card.know {
-      left: 5%;
-      top: 4%;
-      width: 42%;
-      height: 35%;
+      left: 10%;
+      top: 2.5%;
+      rotate: -1.2deg;
+      z-index: 1;
     }
 
     .image-card.think {
-      right: 5%;
-      top: 4%;
-      width: 42%;
-      height: 35%;
+      right: 10%;
+      top: 2.5%;
+      rotate: 1.2deg;
+      z-index: 1;
     }
 
     .image-card.wonder {
-      left: 31%;
-      top: 30%;
-      width: 38%;
-      height: 37%;
+      left: 50%;
+      top: 24%;
+      height: 52%;
+      translate: -50% 0;
       z-index: 3;
     }
 
     .image-card.imagine {
-      left: 5%;
-      bottom: 4%;
-      width: 42%;
-      height: 35%;
+      left: 10%;
+      bottom: 2.5%;
+      rotate: 1deg;
+      z-index: 2;
     }
 
     .image-card.picture {
-      right: 5%;
-      bottom: 4%;
-      width: 42%;
-      height: 35%;
+      right: 10%;
+      bottom: 2.5%;
+      rotate: -1deg;
+      z-index: 2;
     }
 
     .reward-video {
@@ -440,6 +443,30 @@
         border-radius: 24px;
       }
 
+      .image-card {
+        height: min(49%, 23vw);
+      }
+
+      .image-card.know {
+        left: 7%;
+      }
+
+      .image-card.think {
+        right: 7%;
+      }
+
+      .image-card.wonder {
+        height: min(52%, 24vw);
+      }
+
+      .image-card.imagine {
+        left: 7%;
+      }
+
+      .image-card.picture {
+        right: 7%;
+      }
+
       .word-grid {
         gap: 10px 8px;
       }
@@ -512,6 +539,35 @@
         min-height: 250px;
       }
 
+      .image-card {
+        height: 56%;
+      }
+
+      .image-card.know {
+        left: 7%;
+        top: 3%;
+      }
+
+      .image-card.think {
+        right: 7%;
+        top: 3%;
+      }
+
+      .image-card.wonder {
+        top: 20%;
+        height: 60%;
+      }
+
+      .image-card.imagine {
+        left: 7%;
+        bottom: 3%;
+      }
+
+      .image-card.picture {
+        right: 7%;
+        bottom: 3%;
+      }
+
       .game-panel {
         min-height: 390px;
       }
@@ -566,6 +622,35 @@
         gap: 8px;
       }
 
+      .image-card {
+        height: min(50%, 22vw);
+      }
+
+      .image-card.know {
+        left: 7%;
+        top: 2%;
+      }
+
+      .image-card.think {
+        right: 7%;
+        top: 2%;
+      }
+
+      .image-card.wonder {
+        top: 23%;
+        height: min(54%, 24vw);
+      }
+
+      .image-card.imagine {
+        left: 7%;
+        bottom: 2%;
+      }
+
+      .image-card.picture {
+        right: 7%;
+        bottom: 2%;
+      }
+
       .game-panel {
         padding: 10px;
         gap: 10px;
@@ -618,7 +703,6 @@
       <div>
         <div class="eyebrow">Casual Nerdy Word Game</div>
         <h1>Quintet</h1>
-        <div class="subtitle">25개 단어 중 같은 의미군 5개를 고른 뒤 Submit. 정답이면 그림 영역이 보상 영상으로 전환된다.</div>
       </div>
       <div class="score">
         <div class="metric"><div><small>LIFE</small><strong><span id="lifeCount">5</span></strong></div></div>
