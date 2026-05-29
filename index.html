@@ -24,7 +24,9 @@
     padding: 2rem 1rem 3rem;
     gap: 1.5rem;
   }
-  .game-section { width: 100%; max-width: 580px; }
+  .game-section { width: 100%; max-width: 580px; position: relative; }
+  .hint-blocker { display: none; position: fixed; inset: 0; z-index: 9; background: rgba(245, 240, 232, 0.12); cursor: pointer; }
+  .hint-blocker.visible { display: block; }
   .book-label { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
   h2 { font-family: 'Libre Baskerville', serif; font-size: 24px; color: var(--navy); font-weight: 700; margin-bottom: 4px; text-align: center; }
   .subtitle { font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 1.25rem; }
@@ -36,13 +38,12 @@
   .solved-row .cat-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px; }
   .solved-row .cat-words { font-size: 14px; font-weight: 500; }
   .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 1.25rem; }
-  .hint-panel { display: none; margin: 0 auto 1rem; padding: 14px; border-radius: 16px; background: #fffaf0; border: 1px solid #ded4c1; box-shadow: 0 10px 24px rgba(26, 32, 68, 0.08); animation: popIn 0.25s ease; }
+  .hint-panel { display: none; position: absolute; z-index: 10; top: 14px; left: 50%; width: min(308px, calc(100vw - 42px)); pointer-events: none; transform: translateX(-50%); animation: floatHint 0.24s ease; }
   .hint-panel.visible { display: block; }
-  .hint-visual { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
-  .hint-card { min-height: 92px; border-radius: 12px; background: var(--cream-dark); display: grid; place-items: center; gap: 5px; padding: 10px 8px; color: var(--navy); }
-  .hint-card svg { width: 42px; height: 42px; }
-  .hint-word { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-  .hint-caption { text-align: center; color: var(--navy); font-family: 'Libre Baskerville', serif; font-size: 17px; font-weight: 700; }
+  .hint-visual { height: 374px; border: 1.5px solid rgba(26, 32, 68, 0.18); border-radius: 42px; background: rgba(255, 252, 246, 0.96); display: grid; place-items: center; padding: 34px 22px; box-shadow: 0 22px 54px rgba(26, 32, 68, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.76); }
+  .hint-icon { width: 82px; height: 82px; border-radius: 28px; background: var(--cream); display: grid; place-items: center; box-shadow: inset 0 0 0 1px #e8e0d0; }
+  .hint-icon svg { width: 54px; height: 54px; }
+  .hint-caption { width: 100%; margin: 10px auto 0; padding: 7px 12px 8px; border: 1.5px solid rgba(26, 32, 68, 0.18); border-radius: 12px; background: rgba(245, 240, 232, 0.96); text-align: center; color: var(--navy); font-family: 'Libre Baskerville', serif; font-size: 18px; font-weight: 700; line-height: 1.15; box-shadow: 0 8px 20px rgba(26, 32, 68, 0.08); }
   .tile { background: var(--cream-dark); border: none; border-radius: 10px; height: 76px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); cursor: pointer; transition: background 0.12s, transform 0.12s; user-select: none; }
   .tile:hover { background: #d8d0c0; }
   .tile.selected { background: var(--navy); color: var(--cream); }
@@ -62,6 +63,11 @@
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
   @keyframes popIn { 0%{opacity:0;transform:scaleY(0.8)} 100%{opacity:1;transform:scaleY(1)} }
   @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.07)} 100%{transform:scale(1)} }
+  @keyframes floatHint { 0%{opacity:0;transform:translateX(-50%) translateY(-8px) scale(.98)} 100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)} }
+  @media (max-width: 620px) {
+    .hint-panel { top: 22px; width: min(292px, calc(100vw - 32px)); }
+    .hint-visual { height: 344px; border-radius: 44px; }
+  }
 </style>
 </head>
 <body>
@@ -78,31 +84,15 @@
     <span class="dot" id="g2d3" style="background:var(--navy)"></span>
   </div>
   <div class="solved-area" id="g2-solved"></div>
+  <div class="hint-blocker" id="g2-hint-blocker" aria-hidden="true" onclick="hideHint(game2State)"></div>
   <div class="hint-panel" id="g2-hint" aria-live="polite">
     <div class="hint-visual" aria-label="Hint for one category">
-      <div class="hint-card">
-        <svg viewBox="0 0 64 64" role="img" aria-label="Speak">
+      <div class="hint-icon">
+        <svg viewBox="0 0 64 64" role="img" aria-label="Talk">
           <path d="M13 23c0-7 7-12 17-12s17 5 17 12-7 12-17 12c-3 0-6-.4-8-1.4L13 39l2.2-9.4A11 11 0 0 1 13 23Z" fill="#1a2044"/>
           <circle cx="26" cy="23" r="2.2" fill="#f5f0e8"/><circle cx="34" cy="23" r="2.2" fill="#f5f0e8"/>
           <path d="M46 21c5 2 8 6 8 11 0 4-2 8-6 10l1.6 7-7-4c-2 .6-4 .9-7 .9-5 0-9-1.4-12-3.7" fill="none" stroke="#2a7a3a" stroke-width="4" stroke-linecap="round"/>
         </svg>
-        <div class="hint-word">Speak</div>
-      </div>
-      <div class="hint-card">
-        <svg viewBox="0 0 64 64" role="img" aria-label="Tell">
-          <rect x="12" y="13" width="40" height="31" rx="7" fill="#1a2044"/>
-          <path d="M22 52l8-8h15" fill="none" stroke="#1a2044" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M22 24h20M22 32h14" stroke="#f5f0e8" stroke-width="4" stroke-linecap="round"/>
-        </svg>
-        <div class="hint-word">Tell</div>
-      </div>
-      <div class="hint-card">
-        <svg viewBox="0 0 64 64" role="img" aria-label="Murmur">
-          <path d="M10 34c8-10 18-10 30 0M16 43c7-7 15-7 24 0" fill="none" stroke="#1a2044" stroke-width="5" stroke-linecap="round"/>
-          <circle cx="45" cy="23" r="4" fill="#2a7a3a"/><circle cx="54" cy="19" r="2.5" fill="#2a7a3a"/>
-          <path d="M16 21h20" stroke="#1a2044" stroke-width="4" stroke-linecap="round" opacity=".35"/>
-        </svg>
-        <div class="hint-word">Murmur</div>
       </div>
     </div>
     <div class="hint-caption">Ways to talk</div>
@@ -138,6 +128,7 @@ function createGameState(categories, prefix) {
 }
 
 const game2State = createGameState(GAME2_CATEGORIES, 'g2');
+let hintTimer = null;
 
 function renderGame(state) {
   const grid = document.getElementById(state.prefix + '-grid');
@@ -179,12 +170,27 @@ function deselectAll(state) {
 
 function showHint(state) {
   const panel = document.getElementById(state.prefix + '-hint');
+  const blocker = document.getElementById(state.prefix + '-hint-blocker');
   const button = document.getElementById(state.prefix + '-hint-btn');
-  if (!panel || !button) return;
+  if (!panel || !blocker || !button) return;
+  clearTimeout(hintTimer);
   panel.classList.add('visible');
-  button.textContent = 'Hint shown';
+  blocker.classList.add('visible');
   button.disabled = true;
   setMsg(state, 'Hint revealed.', 'success');
+  hintTimer = setTimeout(() => hideHint(state), 3000);
+}
+
+function hideHint(state) {
+  const panel = document.getElementById(state.prefix + '-hint');
+  const blocker = document.getElementById(state.prefix + '-hint-blocker');
+  const button = document.getElementById(state.prefix + '-hint-btn');
+  clearTimeout(hintTimer);
+  hintTimer = null;
+  if (panel) panel.classList.remove('visible');
+  if (blocker) blocker.classList.remove('visible');
+  if (button) button.disabled = false;
+  setMsg(state, '');
 }
 
 function setMsg(state, text, type) {
