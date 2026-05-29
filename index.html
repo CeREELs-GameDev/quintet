@@ -429,6 +429,15 @@
       line-height: 1.15;
     }
 
+    .solved-row small {
+      display: block;
+      margin-top: 5px;
+      font-size: clamp(10px, 0.78vw, 12px);
+      font-weight: 800;
+      line-height: 1.25;
+      opacity: 0.74;
+    }
+
     .solved-row.group-a { --solved-color: #f1c75b; }
     .solved-row.group-b { --solved-color: #74c69d; }
     .solved-row.group-c { --solved-color: #ff9f7a; }
@@ -902,17 +911,24 @@
 
   <script>
     const groups = {
-      "group-a": ["wonder", "picture", "imagine", "know"],
-      "group-b": ["X1", "X2", "X3", "X4"],
-      "group-c": ["Y1", "Y2", "Y3", "Y4"],
-      "group-d": ["Z1", "Z2", "Z3", "Z4"]
+      "group-a": ["KNOW", "WONDER", "IMAGINE", "PICTURE"],
+      "group-b": ["COMIC", "NOTE", "WORK", "TEXT"],
+      "group-c": ["FANTASY", "ROMANCE", "HORROR", "COMEDY"],
+      "group-d": ["CLEVER", "WISE", "BRIGHT", "SHARP"]
     };
 
     const groupLabels = {
-      "group-a": "MIND'S EYE",
-      "group-b": "GROUP B",
-      "group-c": "GROUP C",
-      "group-d": "GROUP D"
+      "group-a": "ACTIONS IN YOUR HEAD",
+      "group-b": "___ BOOK",
+      "group-c": "STORY GENRES",
+      "group-d": "WORDS THAT MEAN SMART"
+    };
+
+    const groupDescriptions = {
+      "group-a": "Things you can do inside your mind.",
+      "group-b": "Words that can come before book.",
+      "group-c": "Kinds of stories people read or watch.",
+      "group-d": "Different words for being smart."
     };
 
     const maxMistakes = 4;
@@ -996,7 +1012,7 @@
         row.className = `solved-row ${group}`;
         if (group === justSolvedGroup) row.classList.add("just-solved-row");
         row.dataset.group = group;
-        row.innerHTML = `<strong>${groupLabels[group]}</strong><span>${groups[group].join(" · ")}</span>`;
+        row.innerHTML = `<strong>${groupLabels[group]}</strong><span>${groups[group].join(" · ")}</span><small>${groupDescriptions[group]}</small>`;
         wordGrid.appendChild(row);
       });
 
