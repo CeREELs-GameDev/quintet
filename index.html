@@ -54,6 +54,177 @@
       gap: clamp(10px, 1.1vw, 18px);
     }
 
+    .app.selecting {
+      grid-template-rows: minmax(0, 1fr);
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .stage-select-view {
+      min-height: 0;
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: clamp(14px, 1.4vw, 22px);
+    }
+
+    .stage-select-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      padding: clamp(16px, 1.6vw, 26px);
+      border: 1px solid var(--soft-line);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 90% 10%, rgba(241, 199, 91, 0.12), transparent 32%),
+        rgba(255, 255, 255, 0.035);
+      box-shadow: var(--shadow);
+    }
+
+    .stage-select-copy {
+      max-width: 720px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .stage-summary {
+      min-width: 166px;
+      min-height: 74px;
+      border: 1px solid var(--soft-line);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .stage-summary small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .stage-summary strong {
+      color: var(--gold);
+      font-size: clamp(24px, 2.1vw, 32px);
+      line-height: 1;
+    }
+
+    .stage-map {
+      min-height: 0;
+      overflow: auto;
+      scrollbar-width: none;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(92px, 1fr));
+      grid-auto-rows: minmax(84px, 1fr);
+      gap: clamp(10px, 1.15vw, 18px);
+      padding: clamp(12px, 1.3vw, 22px);
+      border: 1px solid var(--soft-line);
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025)),
+        rgba(11, 17, 30, 0.72);
+      box-shadow: var(--shadow);
+    }
+
+    .stage-map::-webkit-scrollbar {
+      display: none;
+    }
+
+    .stage-tile {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+        rgba(21, 29, 44, 0.94);
+      color: var(--ink);
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      align-items: center;
+      justify-items: center;
+      padding: 10px 10px 9px;
+      cursor: pointer;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 12px 28px rgba(0, 0, 0, 0.22);
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .stage-tile:not(:disabled):hover {
+      transform: translateY(-3px);
+      border-color: rgba(241, 199, 91, 0.74);
+    }
+
+    .stage-tile.locked {
+      cursor: not-allowed;
+      color: rgba(248, 247, 241, 0.42);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018)),
+        rgba(12, 17, 28, 0.88);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .stage-tile.completed {
+      border-color: rgba(241, 199, 91, 0.42);
+    }
+
+    .stage-number {
+      font-size: clamp(28px, 2.8vw, 46px);
+      font-weight: 300;
+      line-height: 1;
+    }
+
+    .stage-lock {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: rgba(248, 247, 241, 0.48);
+      font-size: 20px;
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .star-rating {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .star-rating .filled {
+      color: var(--gold);
+      text-shadow: 0 0 12px rgba(241, 199, 91, 0.42);
+    }
+
+    .star-rating .empty {
+      color: rgba(248, 247, 241, 0.24);
+    }
+
+    .stage-stars {
+      min-height: 20px;
+      font-size: 17px;
+    }
+
+    .result-star-rating {
+      font-size: clamp(18px, 1.45vw, 24px);
+      justify-content: flex-start;
+    }
+
     .top {
       min-height: 0;
       display: grid;
@@ -65,6 +236,27 @@
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.035);
       box-shadow: var(--shadow);
+    }
+
+    .top-right {
+      display: block;
+    }
+
+    .stage-menu-button {
+      width: 100%;
+      min-height: 0;
+      border: 1px solid var(--soft-line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .stage-menu-button:hover {
+      border-color: rgba(241, 199, 91, 0.72);
     }
 
     .eyebrow {
@@ -95,6 +287,17 @@
       display: grid;
       grid-template-columns: 166px 112px 104px;
       gap: 10px;
+    }
+
+    .pick-stack {
+      min-height: clamp(54px, 6.2vh, 76px);
+      display: grid;
+      grid-template-rows: minmax(28px, 0.58fr) minmax(38px, 1fr);
+      gap: 6px;
+    }
+
+    .pick-stack .metric {
+      min-height: 0;
     }
 
     .metric {
@@ -471,6 +674,255 @@
       animation: rewardGroupGlow 1.65s ease-in-out infinite;
     }
 
+    .game-panel.reward-mode {
+      grid-template-rows: minmax(0, 1fr);
+    }
+
+    .game-panel.reward-mode .controls {
+      display: none;
+    }
+
+    .game-panel.game-over-mode {
+      grid-template-rows: minmax(0, 1fr);
+    }
+
+    .game-panel.game-over-mode .controls {
+      display: none;
+    }
+
+    .word-grid.reward-focus {
+      grid-template-rows:
+        minmax(94px, 1fr)
+        repeat(3, minmax(70px, 0.74fr))
+        minmax(92px, 0.9fr);
+      gap: clamp(8px, 1.05vh, 12px) clamp(8px, 1vw, 16px);
+    }
+
+    .word-grid.reward-focus .solved-row:not(.reward-target) {
+      min-height: 70px;
+      border-width: 1px;
+      padding: 8px 12px;
+      place-items: center;
+      text-align: left;
+    }
+
+    .word-grid.reward-focus .solved-row:not(.reward-target) strong {
+      max-width: 100%;
+      overflow: hidden;
+      font-size: clamp(11px, 0.78vw, 13px);
+      line-height: 1.05;
+      opacity: 0.72;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .word-grid.reward-focus .solved-row:not(.reward-target) span {
+      max-width: 100%;
+      overflow: hidden;
+      margin-top: 3px;
+      font-size: clamp(9px, 0.7vw, 11px);
+      line-height: 1.05;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .word-grid.reward-focus .solved-row:not(.reward-target) small {
+      max-width: 100%;
+      overflow: hidden;
+      margin-top: 3px;
+      font-size: clamp(8px, 0.62vw, 10px);
+      line-height: 1.05;
+      opacity: 0.54;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .result-card {
+      grid-column: 1 / -1;
+      min-height: 0;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)),
+        rgba(8, 13, 27, 0.7);
+      padding: clamp(11px, 1.1vw, 15px);
+      display: grid;
+      grid-template-columns: minmax(118px, 0.45fr) minmax(0, 1fr) auto;
+      align-items: center;
+      align-content: center;
+      gap: clamp(8px, 1vw, 14px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      animation: resultReveal 0.42s ease both;
+    }
+
+    .word-grid.game-over-focus {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      align-items: center;
+    }
+
+    .game-over-card {
+      min-height: min(420px, 100%);
+      grid-template-columns: 1fr;
+      align-self: center;
+      align-content: center;
+      justify-items: center;
+      text-align: center;
+      gap: clamp(22px, 3.2vh, 34px);
+      padding: clamp(24px, 3vw, 44px);
+    }
+
+    .game-over-card .result-title {
+      justify-items: center;
+      gap: 8px;
+    }
+
+    .game-over-card .result-title strong {
+      font-size: clamp(34px, 4.2vw, 58px);
+      font-weight: 300;
+    }
+
+    .game-over-card .result-stats {
+      width: min(720px, 100%);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      text-align: center;
+    }
+
+    .game-over-card .result-stat {
+      justify-items: center;
+      gap: 7px;
+    }
+
+    .game-over-card .result-stat strong {
+      font-size: clamp(23px, 2.5vw, 36px);
+      font-weight: 800;
+    }
+
+    .game-over-card .result-star-rating {
+      justify-content: center;
+    }
+
+    .game-over-card .result-actions {
+      justify-content: center;
+    }
+
+    .game-over-card .result-retry {
+      min-width: 148px;
+      min-height: 48px;
+    }
+
+    .result-title {
+      display: grid;
+      align-content: center;
+      gap: 4px;
+    }
+
+    .result-title span {
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .result-title strong {
+      color: var(--ink);
+      font-size: clamp(18px, 1.35vw, 22px);
+      font-weight: 500;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .result-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(48px, 1fr));
+      align-items: center;
+      gap: clamp(7px, 0.8vw, 12px);
+    }
+
+    .result-stat {
+      display: grid;
+      gap: 4px;
+      align-content: center;
+      min-width: 0;
+    }
+
+    .result-stat small {
+      color: rgba(248, 247, 241, 0.48);
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .result-stat strong {
+      color: var(--ink);
+      font-size: clamp(13px, 0.95vw, 16px);
+      font-weight: 900;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .result-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .result-retry,
+    .result-next {
+      min-width: 92px;
+      min-height: 40px;
+      align-self: center;
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      border-radius: 14px;
+      background: rgba(8, 13, 27, 0.74);
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 400;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .result-next {
+      min-width: 116px;
+      border-color: rgba(241, 199, 91, 0.88);
+      background: var(--gold);
+      color: #10131b;
+      font-weight: 900;
+    }
+
+    .result-retry:hover,
+    .result-next:hover {
+      border-color: rgba(241, 199, 91, 0.72);
+    }
+
+    @media (max-width: 720px) and (orientation: portrait) {
+      .result-card {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .game-over-card {
+        grid-template-columns: 1fr;
+      }
+
+      .result-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .result-actions {
+        width: 100%;
+        flex-direction: column;
+      }
+
+      .result-retry,
+      .result-next {
+        width: 100%;
+      }
+    }
+
     .card.just-solved {
       animation: cardSettle 1s ease;
       box-shadow:
@@ -548,6 +1000,18 @@
       .top {
         padding: 10px 14px;
         gap: 12px;
+      }
+
+      .stage-select-header {
+        padding: 14px 18px;
+      }
+
+      .stage-map {
+        grid-auto-rows: minmax(78px, 1fr);
+      }
+
+      .stage-menu-button {
+        min-height: 0;
       }
 
       h1 {
@@ -637,6 +1101,50 @@
         grid-template-columns: 1fr;
         align-items: center;
         box-shadow: none;
+      }
+
+      .app.selecting {
+        grid-template-rows: auto;
+      }
+
+      .stage-select-view {
+        min-height: 100svh;
+      }
+
+      .stage-select-header {
+        grid-template-columns: 1fr;
+        align-items: start;
+        gap: 12px;
+        box-shadow: none;
+      }
+
+      .stage-select-copy {
+        display: none;
+      }
+
+      .stage-summary {
+        width: 100%;
+        min-height: 52px;
+      }
+
+      .stage-map {
+        grid-template-columns: repeat(4, minmax(66px, 1fr));
+        grid-auto-rows: minmax(86px, 1fr);
+        gap: 8px;
+        padding: 10px;
+      }
+
+      .stage-number {
+        font-size: clamp(27px, 8vw, 42px);
+      }
+
+      .top-right {
+        width: 100%;
+        grid-template-columns: 1fr;
+      }
+
+      .stage-menu-button {
+        min-height: 0;
       }
 
       .eyebrow,
@@ -747,6 +1255,47 @@
         padding: 7px 10px;
       }
 
+      .stage-select-header {
+        padding: 10px 14px;
+      }
+
+      .stage-select-copy {
+        display: none;
+      }
+
+      .stage-summary {
+        min-height: 48px;
+      }
+
+      .stage-map {
+        grid-template-columns: repeat(5, minmax(68px, 1fr));
+        grid-auto-rows: minmax(72px, 1fr);
+        gap: 7px;
+        padding: 10px;
+      }
+
+      .stage-tile {
+        border-radius: 14px;
+        padding: 9px 8px 8px;
+      }
+
+      .stage-number {
+        font-size: clamp(25px, 7vh, 38px);
+      }
+
+      .stage-stars {
+        font-size: 14px;
+      }
+
+      .top-right {
+        display: block;
+      }
+
+      .stage-menu-button {
+        min-height: 0;
+        font-size: 11px;
+      }
+
       .score {
         grid-template-columns: 126px 74px 70px;
         gap: 6px;
@@ -845,6 +1394,17 @@
       }
     }
 
+    @keyframes resultReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     @keyframes cardShake {
       0%, 100% { transform: translateX(0); }
       25% { transform: translateX(-4px); }
@@ -865,22 +1425,44 @@
   </style>
 </head>
 <body>
-  <main class="app">
-    <section class="top">
+  <main class="app selecting" id="app">
+    <section class="stage-select-view" id="stageSelectView">
+      <div class="stage-select-header">
+        <div>
+          <div class="eyebrow">Stage Select</div>
+          <h1>Quintet</h1>
+          <p class="stage-select-copy">Clear a stage with at least one star to unlock the next one.</p>
+        </div>
+        <div class="stage-summary">
+          <div>
+            <small>Total Stars</small>
+            <strong id="totalStars">0/60</strong>
+          </div>
+        </div>
+      </div>
+      <div class="stage-map" id="stageMap" aria-label="stage list"></div>
+    </section>
+
+    <section class="top" id="gameHeader" hidden>
       <div>
-        <div class="eyebrow">Casual Nerdy Word Game</div>
+        <div class="eyebrow" id="stageLabel">Stage 1</div>
         <h1>Quintet</h1>
       </div>
-      <div class="score">
-        <div class="metric"><div><small>MISTAKES REMAINING</small><div class="mistake-dots" id="mistakeDots"></div></div></div>
-        <div class="metric"><div><small>HINTS</small><div class="hint-dots" id="hintDots"></div></div></div>
-        <div class="metric"><div><small>PICKS</small><strong><span id="pickCount">0</span>/4</strong></div></div>
+      <div class="top-right">
+        <div class="score">
+          <div class="metric"><div><small>MISTAKES REMAINING</small><div class="mistake-dots" id="mistakeDots"></div></div></div>
+          <div class="metric"><div><small>HINTS</small><div class="hint-dots" id="hintDots"></div></div></div>
+          <div class="pick-stack">
+            <button class="stage-menu-button" id="stageSelectButton" type="button">Stages</button>
+            <div class="metric"><div><small>PICKS</small><strong><span id="pickCount">0</span>/4</strong></div></div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="layout">
+    <section class="layout" id="gameLayout" hidden>
       <section class="visual-zone" id="visualZone" aria-label="word image area">
-        <div class="image-board">
+        <div class="image-board" id="imageBoard">
           <div class="image-card group-a" data-image-card="group-a">
             <img src="assets/think.png" alt="group A visual clue" />
         </div>
@@ -910,49 +1492,104 @@
   </main>
 
   <script>
-    const groups = {
-      "group-a": ["KNOW", "WONDER", "IMAGINE", "PICTURE"],
-      "group-b": ["COMIC", "NOTE", "WORK", "TEXT"],
-      "group-c": ["FANTASY", "ROMANCE", "HORROR", "COMEDY"],
-      "group-d": ["CLEVER", "WISE", "BRIGHT", "SHARP"]
-    };
-
-    const groupLabels = {
-      "group-a": "ACTIONS IN YOUR HEAD",
-      "group-b": "___ BOOK",
-      "group-c": "STORY GENRES",
-      "group-d": "WORDS THAT MEAN SMART"
-    };
-
-    const groupDescriptions = {
-      "group-a": "Things you can do inside your mind.",
-      "group-b": "Words that can come before book.",
-      "group-c": "Kinds of stories people read or watch.",
-      "group-d": "Different words for being smart."
-    };
-
     const maxMistakes = 4;
     const maxHints = 3;
-    const rewardGroup = "group-a";
+    const progressStorageKey = "quintet-stage-progress-v1";
 
-    const target = {
-      options: Object.entries(groups).flatMap(([group, words]) =>
-        words.map((word, index) => ({ id: `${group}-${index}`, word, group }))
-      ),
-      hint: "같은 그룹으로 묶이는 네 단어를 고르기."
+    function createPlaceholderStage(stageNumber) {
+      return {
+        title: `Stage ${stageNumber}`,
+        groups: {
+          "group-a": ["A1", "A2", "A3", "A4"],
+          "group-b": ["B1", "B2", "B3", "B4"],
+          "group-c": ["C1", "C2", "C3", "C4"],
+          "group-d": ["D1", "D2", "D3", "D4"]
+        },
+        groupLabels: {
+          "group-a": "GROUP A",
+          "group-b": "GROUP B",
+          "group-c": "GROUP C",
+          "group-d": "GROUP D"
+        },
+        groupDescriptions: {
+          "group-a": "Temporary group for this stage.",
+          "group-b": "Temporary group for this stage.",
+          "group-c": "Temporary group for this stage.",
+          "group-d": "Temporary group for this stage."
+        },
+        visuals: {
+          "group-a": { type: "placeholder", label: "A" },
+          "group-b": { type: "placeholder", label: "B" },
+          "group-c": { type: "placeholder", label: "C" },
+          "group-d": { type: "placeholder", label: "D" }
+        },
+        rewardGroup: "group-a",
+        rewardVideo: ""
+      };
+    }
+
+    const firstStage = {
+      title: "Stage 1",
+      groups: {
+        "group-a": ["KNOW", "WONDER", "IMAGINE", "PICTURE"],
+        "group-b": ["COMIC", "NOTE", "WORK", "TEXT"],
+        "group-c": ["FANTASY", "ROMANCE", "HORROR", "COMEDY"],
+        "group-d": ["CLEVER", "WISE", "BRIGHT", "SHARP"]
+      },
+      groupLabels: {
+        "group-a": "ACTIONS IN YOUR HEAD",
+        "group-b": "___ BOOK",
+        "group-c": "STORY GENRES",
+        "group-d": "WORDS THAT MEAN SMART"
+      },
+      groupDescriptions: {
+        "group-a": "Things you can do inside your mind.",
+        "group-b": "Words that can come before book.",
+        "group-c": "Kinds of stories people read or watch.",
+        "group-d": "Different words for being smart."
+      },
+      visuals: {
+        "group-a": { type: "image", src: "assets/think.png", alt: "group A visual clue" },
+        "group-b": { type: "placeholder", label: "B" },
+        "group-c": { type: "placeholder", label: "C" },
+        "group-d": { type: "placeholder", label: "D" }
+      },
+      rewardGroup: "group-a",
+      rewardVideo: "assets/reward.mp4"
     };
 
+    const stages = [
+      firstStage,
+      ...Array.from({ length: 19 }, (_, index) => createPlaceholderStage(index + 2))
+    ];
+
+    const app = document.getElementById("app");
+    const stageSelectView = document.getElementById("stageSelectView");
+    const stageMap = document.getElementById("stageMap");
+    const totalStars = document.getElementById("totalStars");
+    const gameHeader = document.getElementById("gameHeader");
+    const gameLayout = document.getElementById("gameLayout");
+    const stageSelectButton = document.getElementById("stageSelectButton");
     const wordGrid = document.getElementById("wordGrid");
     const message = document.getElementById("message");
     const submit = document.getElementById("submit");
     const hint = document.getElementById("hint");
     const reset = document.getElementById("reset");
+    const stageLabel = document.getElementById("stageLabel");
     const mistakeDots = document.getElementById("mistakeDots");
     const hintDots = document.getElementById("hintDots");
     const pickCount = document.getElementById("pickCount");
     const visualZone = document.getElementById("visualZone");
+    const imageBoard = document.getElementById("imageBoard");
     const rewardVideo = document.getElementById("rewardVideo");
 
+    let stageProgress = loadStageProgress();
+    let currentStageIndex = 0;
+    let currentStage = stages[currentStageIndex];
+    let groups = currentStage.groups;
+    let groupLabels = currentStage.groupLabels;
+    let groupDescriptions = currentStage.groupDescriptions;
+    let rewardGroup = currentStage.rewardGroup;
     let selected = new Set();
     let matched = new Set();
     let lockedWrong = new Set();
@@ -965,12 +1602,166 @@
     let solvedGroups = new Set();
     let solvedGroupOrder = [];
     let resolving = false;
+    let rewardActive = false;
+    let gameOver = false;
+    let attemptCount = 0;
+    let accuracyScore = 0;
+    let mistakeCount = 0;
+    let currentRunStars = 0;
     let solveTimer = null;
     let messageTimer = null;
 
     submit.addEventListener("click", submitAnswer);
     hint.addEventListener("click", useHint);
     reset.addEventListener("click", clearSelection);
+    stageSelectButton.addEventListener("click", showStageSelect);
+
+    function loadStageProgress() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(progressStorageKey) || "{}");
+        return stages.reduce((acc, _, index) => {
+          const value = Number(saved[index] || 0);
+          acc[index] = Math.max(0, Math.min(3, value));
+          return acc;
+        }, {});
+      } catch {
+        return {};
+      }
+    }
+
+    function saveStageProgress() {
+      localStorage.setItem(progressStorageKey, JSON.stringify(stageProgress));
+    }
+
+    function getStageStars(index) {
+      return stageProgress[index] || 0;
+    }
+
+    function saveStageStars(index, stars) {
+      if (stars <= getStageStars(index)) return;
+      stageProgress[index] = stars;
+      saveStageProgress();
+    }
+
+    function isStageUnlocked(index) {
+      if (index === 0) return true;
+      return getStageStars(index - 1) > 0;
+    }
+
+    function getTotalStars() {
+      return stages.reduce((sum, _, index) => sum + getStageStars(index), 0);
+    }
+
+    function getStarMarkup(stars) {
+      return Array.from({ length: 3 }, (_, index) =>
+        `<span class="${index < stars ? "filled" : "empty"}">${index < stars ? "★" : "☆"}</span>`
+      ).join("");
+    }
+
+    function renderStageSelect() {
+      stageMap.innerHTML = "";
+      totalStars.textContent = `${getTotalStars()}/${stages.length * 3}`;
+      stages.forEach((stage, index) => {
+        const stars = getStageStars(index);
+        const unlocked = isStageUnlocked(index);
+        const tile = document.createElement("button");
+        tile.type = "button";
+        tile.className = `stage-tile ${unlocked ? "unlocked" : "locked"} ${stars > 0 ? "completed" : ""}`;
+        tile.disabled = !unlocked;
+        tile.setAttribute("aria-label", `${stage.title}, ${stars} stars`);
+        tile.innerHTML = unlocked
+          ? `<span class="stage-number">${index + 1}</span><span class="star-rating stage-stars">${getStarMarkup(stars)}</span>`
+          : `<span class="stage-lock" aria-hidden="true">🔒</span><span class="star-rating stage-stars">${getStarMarkup(0)}</span>`;
+        tile.addEventListener("click", () => selectStage(index));
+        stageMap.appendChild(tile);
+      });
+    }
+
+    function showStageSelect() {
+      window.clearTimeout(solveTimer);
+      rewardVideo.pause();
+      app.classList.add("selecting");
+      stageSelectView.hidden = false;
+      gameHeader.hidden = true;
+      gameLayout.hidden = true;
+      renderStageSelect();
+    }
+
+    function showGame() {
+      app.classList.remove("selecting");
+      stageSelectView.hidden = true;
+      gameHeader.hidden = false;
+      gameLayout.hidden = false;
+    }
+
+    function selectStage(index) {
+      if (!isStageUnlocked(index)) return;
+      showGame();
+      setCurrentStage(index);
+    }
+
+    function setCurrentStage(index) {
+      currentStageIndex = index;
+      currentStage = stages[currentStageIndex];
+      groups = currentStage.groups;
+      groupLabels = currentStage.groupLabels;
+      groupDescriptions = currentStage.groupDescriptions;
+      rewardGroup = currentStage.rewardGroup;
+      start();
+    }
+
+    function hasNextStage() {
+      return currentStageIndex < stages.length - 1;
+    }
+
+    function goToNextStage() {
+      if (!hasNextStage()) return;
+      setCurrentStage(currentStageIndex + 1);
+    }
+
+    function createCardOptions() {
+      return Object.entries(groups).flatMap(([group, words]) =>
+        words.map((word, index) => ({ id: `${group}-${index}`, word, group }))
+      );
+    }
+
+    function renderVisualCards() {
+      imageBoard.innerHTML = "";
+      Object.keys(groups).forEach(group => {
+        const visual = currentStage.visuals[group] || { type: "placeholder", label: group.slice(-1).toUpperCase() };
+        const card = document.createElement("div");
+        card.className = `image-card ${group}`;
+        card.dataset.imageCard = group;
+
+        if (visual.type === "image") {
+          const image = document.createElement("img");
+          image.src = visual.src;
+          image.alt = visual.alt || `${groupLabels[group]} visual clue`;
+          card.appendChild(image);
+        } else {
+          const placeholder = document.createElement("div");
+          placeholder.className = "placeholder";
+          placeholder.textContent = visual.label || group.slice(-1).toUpperCase();
+          card.appendChild(placeholder);
+        }
+
+        imageBoard.appendChild(card);
+      });
+    }
+
+    function syncRewardVideo() {
+      rewardVideo.pause();
+      rewardVideo.currentTime = 0;
+      if (currentStage.rewardVideo) {
+        if (rewardVideo.getAttribute("src") !== currentStage.rewardVideo) {
+          rewardVideo.src = currentStage.rewardVideo;
+          rewardVideo.load();
+        }
+        return;
+      }
+      rewardVideo.removeAttribute("src");
+      rewardVideo.load();
+    }
 
     function start() {
       selected = new Set();
@@ -984,13 +1775,21 @@
       solvedGroups = new Set();
       solvedGroupOrder = [];
       resolving = false;
+      rewardActive = false;
+      gameOver = false;
+      attemptCount = 0;
+      accuracyScore = 0;
+      mistakeCount = 0;
+      currentRunStars = 0;
       window.clearTimeout(solveTimer);
-      cardWords = shuffle(target.options);
+      stageLabel.textContent = currentStage.title;
+      renderVisualCards();
+      syncRewardVideo();
+      cardWords = shuffle(createCardOptions());
       hideMessage();
       visualZone.classList.remove("rewarding");
       clearRewardFocus();
-      rewardVideo.pause();
-      rewardVideo.currentTime = 0;
+      clearGameOverFocus();
       document.querySelectorAll("[data-image-card]").forEach(card => {
         card.classList.remove("matched", "wrong-pulse");
       });
@@ -1007,7 +1806,20 @@
       }
 
       wordGrid.innerHTML = "";
-      solvedGroupOrder.forEach(group => {
+      if (gameOver) {
+        appendGameOverCard();
+        renderMistakes();
+        renderHints();
+        pickCount.textContent = selected.size;
+        submit.disabled = true;
+        hint.disabled = true;
+        return;
+      }
+
+      const visibleSolvedGroups = rewardActive
+        ? [rewardGroup, ...solvedGroupOrder.filter(group => group !== rewardGroup)]
+        : solvedGroupOrder;
+      visibleSolvedGroups.forEach(group => {
         const row = document.createElement("div");
         row.className = `solved-row ${group}`;
         if (group === justSolvedGroup) row.classList.add("just-solved-row");
@@ -1015,6 +1827,8 @@
         row.innerHTML = `<strong>${groupLabels[group]}</strong><span>${groups[group].join(" · ")}</span><small>${groupDescriptions[group]}</small>`;
         wordGrid.appendChild(row);
       });
+
+      if (rewardActive) appendResultCard();
 
       cardWords.filter(card => !solvedGroups.has(card.group)).forEach(card => {
         const button = document.createElement("button");
@@ -1036,15 +1850,88 @@
       renderMistakes();
       renderHints();
       pickCount.textContent = selected.size;
-      submit.disabled = resolving || selected.size !== 4 || solvedGroups.size === Object.keys(groups).length;
-      hint.disabled = resolving || solved || hintsRemaining <= 0 || !hasHintCandidate();
+      submit.disabled = rewardActive || resolving || selected.size !== 4 || solvedGroups.size === Object.keys(groups).length;
+      hint.disabled = rewardActive || resolving || solved || hintsRemaining <= 0 || !hasHintCandidate();
       if (animate) animateCardsFrom(oldRects);
     }
 
+    function appendResultCard() {
+      const stats = getResultStats();
+      const result = document.createElement("div");
+      result.className = "result-card";
+      result.innerHTML = `
+        <div class="result-title">
+          <span>Result</span>
+          <strong>Scorecard</strong>
+        </div>
+        <div class="result-stats">
+          <div class="result-stat"><small>Stars</small><strong class="star-rating result-star-rating">${getStarMarkup(stats.stars)}</strong></div>
+          <div class="result-stat"><small>Attempts</small><strong>${stats.attempts}</strong></div>
+          <div class="result-stat"><small>Mistakes</small><strong>${stats.mistakes}</strong></div>
+          <div class="result-stat"><small>Hints</small><strong>${stats.hints}</strong></div>
+        </div>
+        <div class="result-actions">
+          ${hasNextStage() ? `<button type="button" class="result-next">Next Stage</button>` : ""}
+          <button type="button" class="result-retry">Retry</button>
+        </div>
+      `;
+      const nextButton = result.querySelector(".result-next");
+      if (nextButton) nextButton.addEventListener("click", goToNextStage);
+      result.querySelector(".result-retry").addEventListener("click", start);
+      wordGrid.appendChild(result);
+    }
+
+    function appendGameOverCard() {
+      const stats = getGameOverStats();
+      const result = document.createElement("div");
+      result.className = "result-card game-over-card";
+      result.innerHTML = `
+        <div class="result-title">
+          <span>Game Over</span>
+          <strong>Scorecard</strong>
+        </div>
+        <div class="result-stats">
+          <div class="result-stat"><small>Stars</small><strong class="star-rating result-star-rating">${getStarMarkup(0)}</strong></div>
+          <div class="result-stat"><small>Solved</small><strong>${stats.solved}</strong></div>
+          <div class="result-stat"><small>Mistakes</small><strong>${stats.mistakes}</strong></div>
+          <div class="result-stat"><small>Hints</small><strong>${stats.hints}</strong></div>
+        </div>
+        <div class="result-actions">
+          <button type="button" class="result-retry">Retry</button>
+        </div>
+      `;
+      result.querySelector(".result-retry").addEventListener("click", start);
+      wordGrid.appendChild(result);
+    }
+
+    function getResultStats() {
+      return {
+        stars: currentRunStars,
+        attempts: attemptCount,
+        mistakes: mistakeCount,
+        hints: maxHints - hintsRemaining
+      };
+    }
+
+    function getGameOverStats() {
+      const stats = getResultStats();
+      return {
+        ...stats,
+        solved: `${solvedGroups.size}/${Object.keys(groups).length}`
+      };
+    }
+
+    function calculateStars() {
+      const hintsUsed = maxHints - hintsRemaining;
+      if (mistakeCount === 0 && hintsUsed === 0) return 3;
+      if (mistakeCount <= 2 && hintsUsed <= 1) return 2;
+      return 1;
+    }
+
     function toggleWord(cardId) {
-      if (solved || resolving || matched.has(cardId)) return;
+      if (gameOver || solved || resolving || matched.has(cardId)) return;
       if (!selected.has(cardId) && selected.size >= 4) {
-        setMessage("이미 4개를 골랐음. 다른 단어를 빼고 다시 선택.", 1600);
+        setMessage("Four words already selected. Deselect one to choose another.", 1600);
         return;
       }
       lockedWrong.clear();
@@ -1054,7 +1941,7 @@
         selected.add(cardId);
       }
       if (selected.size === 4) {
-        setMessage("4개 선택 완료. Submit으로 확인.", 1400);
+        setMessage("Four words selected. Press Submit to check.", 1400);
       } else {
         hideMessage();
       }
@@ -1087,6 +1974,9 @@
       const selectedGroups = new Set(selectedCards.map(card => card && card.group));
       const solvedGroup = selectedCards[0] && selectedCards[0].group;
       const allCorrect = selectedGroups.size === 1 && solvedGroup && !solvedGroups.has(solvedGroup);
+      const matchScore = getLargestGroupCount(selectedCards);
+      attemptCount += 1;
+      accuracyScore += matchScore;
       if (allCorrect) {
         resolving = true;
         selectedIds.forEach(id => matched.add(id));
@@ -1099,8 +1989,18 @@
         }, 1180);
       } else {
         if (mistakesRemaining > 0) mistakesRemaining -= 1;
+        mistakeCount += 1;
         lockedWrong = new Set(selectedIds);
-        const oneAway = getLargestGroupCount(selectedCards) === 3;
+        const oneAway = matchScore === 3;
+        if (mistakesRemaining === 0) {
+          gameOver = true;
+          selected.clear();
+          lockedWrong.clear();
+          hideMessage();
+          renderCards();
+          showGameOverFocus();
+          return;
+        }
         setMessage(getWrongMessage(oneAway), 1800);
         window.setTimeout(() => {
           lockedWrong.clear();
@@ -1113,7 +2013,7 @@
     }
 
     function useHint() {
-      if (solved || resolving || hintsRemaining <= 0) return;
+      if (gameOver || solved || resolving || hintsRemaining <= 0) return;
       const revealed = revealPairHint();
       if (!revealed) {
         renderCards();
@@ -1154,7 +2054,7 @@
     }
 
     function clearSelection() {
-      if (resolving) return;
+      if (gameOver || resolving) return;
       if (selected.size === 0 && lockedWrong.size === 0) return;
       selected.clear();
       lockedWrong.clear();
@@ -1253,8 +2153,13 @@
     }
 
     function playReward() {
-      visualZone.classList.add("rewarding");
+      if (currentStage.rewardVideo) visualZone.classList.add("rewarding");
+      rewardActive = true;
+      currentRunStars = calculateStars();
+      saveStageStars(currentStageIndex, currentRunStars);
+      renderCards();
       focusRewardGroup(rewardGroup);
+      if (!currentStage.rewardVideo) return;
       rewardVideo.currentTime = 0;
       rewardVideo.play().catch(() => {
         setMessage("Quintet complete. Tap the video area if playback is blocked.", 2400);
@@ -1262,6 +2167,7 @@
     }
 
     function focusRewardGroup(group) {
+      document.querySelector(".game-panel").classList.add("reward-mode");
       wordGrid.classList.add("reward-focus");
       wordGrid.querySelectorAll(".solved-row").forEach(row => {
         row.classList.remove("just-solved-row");
@@ -1269,11 +2175,22 @@
       });
     }
 
+    function showGameOverFocus() {
+      document.querySelector(".game-panel").classList.add("game-over-mode");
+      wordGrid.classList.add("game-over-focus");
+    }
+
     function clearRewardFocus() {
+      document.querySelector(".game-panel").classList.remove("reward-mode");
       wordGrid.classList.remove("reward-focus");
       wordGrid.querySelectorAll(".solved-row").forEach(row => {
         row.classList.remove("reward-target");
       });
+    }
+
+    function clearGameOverFocus() {
+      document.querySelector(".game-panel").classList.remove("game-over-mode");
+      wordGrid.classList.remove("game-over-focus");
     }
 
     function setMessage(text, duration = 1600) {
@@ -1297,7 +2214,7 @@
       return copy;
     }
 
-    start();
+    renderStageSelect();
   </script>
 </body>
 </html>
