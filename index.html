@@ -1,2220 +1,265 @@
-<!doctype html>
-<html lang="ko">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Quintet</title>
-  <style>
-    :root {
-      --bg: #1c2028;
-      --panel: #111827;
-      --panel-2: #151d2c;
-      --tile: #04070d;
-      --ink: #f8f7f1;
-      --muted: #aeb5c4;
-      --line: rgba(255, 255, 255, 0.38);
-      --soft-line: rgba(255, 255, 255, 0.18);
-      --card: #34385f;
-      --card-2: #3c4068;
-      --gold: #f1c75b;
-      --green: #74c69d;
-      --red: #ff7a7a;
-      --shadow: 0 24px 72px rgba(0, 0, 0, 0.42);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      min-height: 100svh;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 72% -10%, rgba(22, 41, 78, 0.8), transparent 34%),
-        linear-gradient(180deg, #1d222b 0%, #171b23 100%);
-      color: var(--ink);
-      font-family: "Segoe UI", "Noto Sans KR", Arial, sans-serif;
-      letter-spacing: 0;
-    }
-
-    button {
-      font: inherit;
-    }
-
-    .app {
-      width: min(100vw - 24px, 1720px);
-      height: 100vh;
-      height: 100svh;
-      margin: 0 auto;
-      padding: clamp(10px, 1.25vw, 22px) 0;
-      display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
-      gap: clamp(10px, 1.1vw, 18px);
-    }
-
-    .app.selecting {
-      grid-template-rows: minmax(0, 1fr);
-    }
-
-    [hidden] {
-      display: none !important;
-    }
-
-    .stage-select-view {
-      min-height: 0;
-      height: 100%;
-      display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
-      gap: clamp(14px, 1.4vw, 22px);
-    }
-
-    .stage-select-header {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 18px;
-      align-items: end;
-      padding: clamp(16px, 1.6vw, 26px);
-      border: 1px solid var(--soft-line);
-      border-radius: 8px;
-      background:
-        radial-gradient(circle at 90% 10%, rgba(241, 199, 91, 0.12), transparent 32%),
-        rgba(255, 255, 255, 0.035);
-      box-shadow: var(--shadow);
-    }
-
-    .stage-select-copy {
-      max-width: 720px;
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.45;
-    }
-
-    .stage-summary {
-      min-width: 166px;
-      min-height: 74px;
-      border: 1px solid var(--soft-line);
-      border-radius: 8px;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .stage-summary small {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 900;
-      margin-bottom: 4px;
-      text-transform: uppercase;
-    }
-
-    .stage-summary strong {
-      color: var(--gold);
-      font-size: clamp(24px, 2.1vw, 32px);
-      line-height: 1;
-    }
-
-    .stage-map {
-      min-height: 0;
-      overflow: auto;
-      scrollbar-width: none;
-      display: grid;
-      grid-template-columns: repeat(5, minmax(92px, 1fr));
-      grid-auto-rows: minmax(84px, 1fr);
-      gap: clamp(10px, 1.15vw, 18px);
-      padding: clamp(12px, 1.3vw, 22px);
-      border: 1px solid var(--soft-line);
-      border-radius: 18px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025)),
-        rgba(11, 17, 30, 0.72);
-      box-shadow: var(--shadow);
-    }
-
-    .stage-map::-webkit-scrollbar {
-      display: none;
-    }
-
-    .stage-tile {
-      position: relative;
-      min-width: 0;
-      min-height: 0;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 18px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
-        rgba(21, 29, 44, 0.94);
-      color: var(--ink);
-      display: grid;
-      grid-template-rows: minmax(0, 1fr) auto;
-      align-items: center;
-      justify-items: center;
-      padding: 10px 10px 9px;
-      cursor: pointer;
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        0 12px 28px rgba(0, 0, 0, 0.22);
-      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
-    }
-
-    .stage-tile:not(:disabled):hover {
-      transform: translateY(-3px);
-      border-color: rgba(241, 199, 91, 0.74);
-    }
-
-    .stage-tile.locked {
-      cursor: not-allowed;
-      color: rgba(248, 247, 241, 0.42);
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018)),
-        rgba(12, 17, 28, 0.88);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
-
-    .stage-tile.completed {
-      border-color: rgba(241, 199, 91, 0.42);
-    }
-
-    .stage-number {
-      font-size: clamp(28px, 2.8vw, 46px);
-      font-weight: 300;
-      line-height: 1;
-    }
-
-    .stage-lock {
-      width: 42px;
-      height: 42px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      color: rgba(248, 247, 241, 0.48);
-      font-size: 20px;
-      background: rgba(0, 0, 0, 0.18);
-    }
-
-    .star-rating {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-    .star-rating .filled {
-      color: var(--gold);
-      text-shadow: 0 0 12px rgba(241, 199, 91, 0.42);
-    }
-
-    .star-rating .empty {
-      color: rgba(248, 247, 241, 0.24);
-    }
-
-    .stage-stars {
-      min-height: 20px;
-      font-size: 17px;
-    }
-
-    .result-star-rating {
-      font-size: clamp(18px, 1.45vw, 24px);
-      justify-content: flex-start;
-    }
-
-    .top {
-      min-height: 0;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 18px;
-      align-items: end;
-      padding: clamp(12px, 1.2vw, 18px) clamp(14px, 1.5vw, 24px);
-      border: 1px solid var(--soft-line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.035);
-      box-shadow: var(--shadow);
-    }
-
-    .top-right {
-      display: block;
-    }
-
-    .stage-menu-button {
-      width: 100%;
-      min-height: 0;
-      border: 1px solid var(--soft-line);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--ink);
-      font-size: 13px;
-      font-weight: 900;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
-
-    .stage-menu-button:hover {
-      border-color: rgba(241, 199, 91, 0.72);
-    }
-
-    .eyebrow {
-      color: var(--gold);
-      font-size: 12px;
-      font-weight: 900;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(56px, 7vw, 104px);
-      line-height: 0.88;
-      font-weight: 300;
-      letter-spacing: 0;
-    }
-
-    .subtitle {
-      max-width: 760px;
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.45;
-    }
-
-    .score {
-      display: grid;
-      grid-template-columns: 166px 112px 104px;
-      gap: 10px;
-    }
-
-    .pick-stack {
-      min-height: clamp(54px, 6.2vh, 76px);
-      display: grid;
-      grid-template-rows: minmax(28px, 0.58fr) minmax(38px, 1fr);
-      gap: 6px;
-    }
-
-    .pick-stack .metric {
-      min-height: 0;
-    }
-
-    .metric {
-      min-height: clamp(54px, 6.2vh, 76px);
-      border: 1px solid var(--soft-line);
-      border-radius: 8px;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .metric small {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-      margin-bottom: 3px;
-    }
-
-    .metric strong {
-      font-size: clamp(22px, 2vw, 29px);
-      line-height: 1;
-    }
-
-    .mistake-dots {
-      display: flex;
-      justify-content: center;
-      gap: 7px;
-    }
-
-    .mistake-dot,
-    .hint-dot {
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      background: var(--ink);
-      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
-    }
-
-    .hint-dots {
-      display: flex;
-      justify-content: center;
-      gap: 7px;
-    }
-
-    .hint-dot {
-      background: var(--gold);
-      box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.14),
-        0 0 10px rgba(241, 199, 91, 0.34);
-    }
-
-    .mistake-dot.used,
-    .hint-dot.used {
-      opacity: 0.18;
-      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(430px, 0.82fr) minmax(560px, 1fr);
-      gap: clamp(12px, 1.5vw, 24px);
-      align-items: stretch;
-      min-height: 0;
-    }
-
-    .visual-zone {
-      min-height: 0;
-      height: 100%;
-      position: relative;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.02);
-      overflow: hidden;
-    }
-
-    .visual-zone::before {
-      content: "";
-      position: absolute;
-      inset: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      pointer-events: none;
-    }
-
-    .image-board {
-      position: absolute;
-      inset: 0;
-      transition: opacity 0.32s ease, transform 0.32s ease;
-    }
-
-    .visual-zone.rewarding .image-board {
-      opacity: 0;
-      transform: scale(0.96);
-      pointer-events: none;
-    }
-
-    .image-card {
-      position: absolute;
-      aspect-ratio: 585 / 1024;
-      height: 45%;
-      width: auto;
-      overflow: hidden;
-      border: clamp(3px, 0.36vw, 6px) solid rgba(255, 255, 255, 0.42);
-      border-radius: 34px;
-      background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
-        #02040a;
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.36);
-      transition: transform 0.22s ease, border-color 0.22s ease, filter 0.22s ease, box-shadow 0.22s ease;
-    }
-
-    .image-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      opacity: 1;
-      filter: saturate(0.98) brightness(0.92);
-      transition: filter 0.32s ease, transform 0.32s ease;
-    }
-
-    .placeholder {
-      width: 100%;
-      height: 100%;
-      display: grid;
-      place-items: center;
-      background:
-        radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.08), transparent 36%),
-        linear-gradient(180deg, rgba(52, 56, 95, 0.62), rgba(9, 14, 28, 0.94));
-      color: rgba(255, 255, 255, 0.32);
-      font-size: clamp(48px, 6vw, 76px);
-      font-weight: 300;
-    }
-
-    .image-card.matched {
-      box-shadow:
-        0 0 0 3px rgba(255, 255, 255, 0.12),
-        0 0 26px color-mix(in srgb, var(--group-color, var(--gold)) 58%, transparent),
-        0 24px 48px rgba(0, 0, 0, 0.36);
-      animation: imagePulse 1s ease;
-    }
-
-    .image-card.group-a.matched { border-color: #f1c75b; --group-color: #f1c75b; }
-    .image-card.group-b.matched { border-color: #74c69d; --group-color: #74c69d; }
-    .image-card.group-c.matched { border-color: #ff9f7a; --group-color: #ff9f7a; }
-    .image-card.group-d.matched { border-color: #8ea7ff; --group-color: #8ea7ff; }
-
-    .image-card.matched img {
-      filter: saturate(1.14) brightness(1.07);
-    }
-
-    .image-card.group-a {
-      left: 14%;
-      top: 4%;
-      rotate: -0.6deg;
-      z-index: 2;
-    }
-
-    .image-card.group-b {
-      right: 14%;
-      top: 4%;
-      rotate: 0.6deg;
-      z-index: 1;
-    }
-
-    .image-card.group-c {
-      left: 14%;
-      bottom: 4%;
-      rotate: 0.5deg;
-      z-index: 1;
-    }
-
-    .image-card.group-d {
-      right: 14%;
-      bottom: 4%;
-      rotate: -0.5deg;
-      z-index: 1;
-    }
-
-    .reward-video {
-      position: absolute;
-      inset: 4%;
-      width: 92%;
-      height: 92%;
-      object-fit: contain;
-      border: 6px solid rgba(255, 255, 255, 0.46);
-      border-radius: 34px;
-      background: #02040a;
-      opacity: 0;
-      transform: scale(1.04);
-      pointer-events: none;
-      transition: opacity 0.34s ease, transform 0.34s ease;
-      box-shadow:
-        0 0 0 3px rgba(241, 199, 91, 0.18),
-        0 24px 72px rgba(0, 0, 0, 0.45);
-    }
-
-    .visual-zone.rewarding .reward-video {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .game-panel {
-      min-height: 0;
-      height: 100%;
-      position: relative;
-      border: 3px solid rgba(255, 255, 255, 0.42);
-      border-radius: 34px;
-      background: rgba(18, 27, 45, 0.84);
-      padding: clamp(14px, 1.7vw, 28px);
-      display: grid;
-      grid-template-rows: minmax(0, 1fr) auto;
-      gap: clamp(16px, 2.2vh, 30px);
-      box-shadow: var(--shadow);
-    }
-
-    .message {
-      position: absolute;
-      top: clamp(10px, 1.3vw, 18px);
-      left: 50%;
-      z-index: 5;
-      width: max-content;
-      max-width: calc(100% - 36px);
-      min-height: 0;
-      border: 1px solid rgba(241, 199, 91, 0.36);
-      border-radius: 8px;
-      background: rgba(10, 15, 29, 0.92);
-      color: #f7e7bc;
-      line-height: 1.45;
-      padding: 9px 13px;
-      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.32);
-      opacity: 0;
-      pointer-events: none;
-      transform: translate(-50%, -8px);
-      transition: opacity 0.18s ease, transform 0.18s ease;
-    }
-
-    .message.visible {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-
-    .word-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      grid-template-rows: repeat(4, minmax(0, 1fr));
-      gap: clamp(10px, 1.55vh, 22px) clamp(8px, 1vw, 16px);
-      align-content: stretch;
-      min-height: 0;
-    }
-
-    .card {
-      position: relative;
-      min-height: 0;
-      width: 100%;
-      height: 100%;
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      border-radius: 16px;
-      background: linear-gradient(180deg, var(--card-2), var(--card));
-      color: var(--ink);
-      font-size: clamp(13px, 1vw, 17px);
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      transition: transform 0.13s ease, border-color 0.13s ease, background 0.13s ease;
-    }
-
-    .card-label {
-      opacity: 1;
-      transition: opacity 0.16s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(241, 199, 91, 0.7);
-    }
-
-    .card.selected {
-      border-color: rgba(255, 255, 255, 0.62);
-      background: linear-gradient(180deg, #242833, #171b24);
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        0 0 0 2px rgba(255, 255, 255, 0.08);
-    }
-
-    .card.correct {
-      border-color: color-mix(in srgb, var(--solved-color, var(--gold)) 72%, white);
-      background: linear-gradient(180deg, color-mix(in srgb, var(--solved-color, var(--gold)) 92%, white), var(--solved-color, var(--gold)));
-      color: #10131b;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26);
-      pointer-events: none;
-    }
-
-    .card.group-a.correct { --solved-color: #f1c75b; }
-    .card.group-b.correct { --solved-color: #74c69d; }
-    .card.group-c.correct { --solved-color: #ff9f7a; }
-    .card.group-d.correct { --solved-color: #8ea7ff; }
-
-    .solved-row {
-      grid-column: 1 / -1;
-      min-height: 0;
-      height: 100%;
-      border: 2px solid color-mix(in srgb, var(--solved-color, var(--gold)) 70%, white);
-      border-radius: 16px;
-      background: linear-gradient(180deg, color-mix(in srgb, var(--solved-color, var(--gold)) 92%, white), var(--solved-color, var(--gold)));
-      color: #10131b;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 8px 12px;
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.32),
-        0 10px 24px rgba(0, 0, 0, 0.22);
-    }
-
-    .solved-row.just-solved-row {
-      animation: rowReveal 0.82s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .solved-row strong {
-      display: block;
-      font-size: clamp(13px, 1vw, 17px);
-      line-height: 1.1;
-      text-transform: uppercase;
-    }
-
-    .solved-row span {
-      display: block;
-      margin-top: 4px;
-      font-size: clamp(11px, 0.88vw, 14px);
-      font-weight: 900;
-      line-height: 1.15;
-    }
-
-    .solved-row small {
-      display: block;
-      margin-top: 5px;
-      font-size: clamp(10px, 0.78vw, 12px);
-      font-weight: 800;
-      line-height: 1.25;
-      opacity: 0.74;
-    }
-
-    .solved-row.group-a { --solved-color: #f1c75b; }
-    .solved-row.group-b { --solved-color: #74c69d; }
-    .solved-row.group-c { --solved-color: #ff9f7a; }
-    .solved-row.group-d { --solved-color: #8ea7ff; }
-
-    .word-grid.reward-focus .solved-row {
-      border-color: rgba(255, 255, 255, 0.16);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.045));
-      color: rgba(248, 247, 241, 0.46);
-      filter: saturate(0.08) brightness(0.84);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      transition:
-        border-color 0.34s ease,
-        background 0.34s ease,
-        color 0.34s ease,
-        filter 0.34s ease,
-        box-shadow 0.34s ease,
-        opacity 0.34s ease;
-    }
-
-    .word-grid.reward-focus .solved-row.reward-target {
-      border-color: color-mix(in srgb, var(--solved-color, var(--gold)) 72%, white);
-      background: linear-gradient(180deg, color-mix(in srgb, var(--solved-color, var(--gold)) 92%, white), var(--solved-color, var(--gold)));
-      color: #10131b;
-      filter: none;
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.34),
-        0 0 0 3px color-mix(in srgb, var(--solved-color, var(--gold)) 22%, transparent),
-        0 0 30px color-mix(in srgb, var(--solved-color, var(--gold)) 64%, transparent),
-        0 18px 38px rgba(0, 0, 0, 0.3);
-      animation: rewardGroupGlow 1.65s ease-in-out infinite;
-    }
-
-    .game-panel.reward-mode {
-      grid-template-rows: minmax(0, 1fr);
-    }
-
-    .game-panel.reward-mode .controls {
-      display: none;
-    }
-
-    .game-panel.game-over-mode {
-      grid-template-rows: minmax(0, 1fr);
-    }
-
-    .game-panel.game-over-mode .controls {
-      display: none;
-    }
-
-    .word-grid.reward-focus {
-      grid-template-rows:
-        minmax(94px, 1fr)
-        repeat(3, minmax(70px, 0.74fr))
-        minmax(92px, 0.9fr);
-      gap: clamp(8px, 1.05vh, 12px) clamp(8px, 1vw, 16px);
-    }
-
-    .word-grid.reward-focus .solved-row:not(.reward-target) {
-      min-height: 70px;
-      border-width: 1px;
-      padding: 8px 12px;
-      place-items: center;
-      text-align: left;
-    }
-
-    .word-grid.reward-focus .solved-row:not(.reward-target) strong {
-      max-width: 100%;
-      overflow: hidden;
-      font-size: clamp(11px, 0.78vw, 13px);
-      line-height: 1.05;
-      opacity: 0.72;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .word-grid.reward-focus .solved-row:not(.reward-target) span {
-      max-width: 100%;
-      overflow: hidden;
-      margin-top: 3px;
-      font-size: clamp(9px, 0.7vw, 11px);
-      line-height: 1.05;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .word-grid.reward-focus .solved-row:not(.reward-target) small {
-      max-width: 100%;
-      overflow: hidden;
-      margin-top: 3px;
-      font-size: clamp(8px, 0.62vw, 10px);
-      line-height: 1.05;
-      opacity: 0.54;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .result-card {
-      grid-column: 1 / -1;
-      min-height: 0;
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      border-radius: 16px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)),
-        rgba(8, 13, 27, 0.7);
-      padding: clamp(11px, 1.1vw, 15px);
-      display: grid;
-      grid-template-columns: minmax(118px, 0.45fr) minmax(0, 1fr) auto;
-      align-items: center;
-      align-content: center;
-      gap: clamp(8px, 1vw, 14px);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      animation: resultReveal 0.42s ease both;
-    }
-
-    .word-grid.game-over-focus {
-      grid-template-columns: 1fr;
-      grid-template-rows: 1fr;
-      align-items: center;
-    }
-
-    .game-over-card {
-      min-height: min(420px, 100%);
-      grid-template-columns: 1fr;
-      align-self: center;
-      align-content: center;
-      justify-items: center;
-      text-align: center;
-      gap: clamp(22px, 3.2vh, 34px);
-      padding: clamp(24px, 3vw, 44px);
-    }
-
-    .game-over-card .result-title {
-      justify-items: center;
-      gap: 8px;
-    }
-
-    .game-over-card .result-title strong {
-      font-size: clamp(34px, 4.2vw, 58px);
-      font-weight: 300;
-    }
-
-    .game-over-card .result-stats {
-      width: min(720px, 100%);
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      text-align: center;
-    }
-
-    .game-over-card .result-stat {
-      justify-items: center;
-      gap: 7px;
-    }
-
-    .game-over-card .result-stat strong {
-      font-size: clamp(23px, 2.5vw, 36px);
-      font-weight: 800;
-    }
-
-    .game-over-card .result-star-rating {
-      justify-content: center;
-    }
-
-    .game-over-card .result-actions {
-      justify-content: center;
-    }
-
-    .game-over-card .result-retry {
-      min-width: 148px;
-      min-height: 48px;
-    }
-
-    .result-title {
-      display: grid;
-      align-content: center;
-      gap: 4px;
-    }
-
-    .result-title span {
-      color: var(--gold);
-      font-size: 11px;
-      font-weight: 900;
-      line-height: 1;
-      text-transform: uppercase;
-    }
-
-    .result-title strong {
-      color: var(--ink);
-      font-size: clamp(18px, 1.35vw, 22px);
-      font-weight: 500;
-      line-height: 1;
-      text-transform: uppercase;
-    }
-
-    .result-stats {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(48px, 1fr));
-      align-items: center;
-      gap: clamp(7px, 0.8vw, 12px);
-    }
-
-    .result-stat {
-      display: grid;
-      gap: 4px;
-      align-content: center;
-      min-width: 0;
-    }
-
-    .result-stat small {
-      color: rgba(248, 247, 241, 0.48);
-      font-size: 10px;
-      font-weight: 900;
-      line-height: 1;
-      text-transform: uppercase;
-    }
-
-    .result-stat strong {
-      color: var(--ink);
-      font-size: clamp(13px, 0.95vw, 16px);
-      font-weight: 900;
-      line-height: 1.1;
-      white-space: nowrap;
-    }
-
-    .result-actions {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .result-retry,
-    .result-next {
-      min-width: 92px;
-      min-height: 40px;
-      align-self: center;
-      border: 1px solid rgba(255, 255, 255, 0.42);
-      border-radius: 14px;
-      background: rgba(8, 13, 27, 0.74);
-      color: var(--ink);
-      font-size: 15px;
-      font-weight: 400;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
-
-    .result-next {
-      min-width: 116px;
-      border-color: rgba(241, 199, 91, 0.88);
-      background: var(--gold);
-      color: #10131b;
-      font-weight: 900;
-    }
-
-    .result-retry:hover,
-    .result-next:hover {
-      border-color: rgba(241, 199, 91, 0.72);
-    }
-
-    @media (max-width: 720px) and (orientation: portrait) {
-      .result-card {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-
-      .game-over-card {
-        grid-template-columns: 1fr;
-      }
-
-      .result-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .result-actions {
-        width: 100%;
-        flex-direction: column;
-      }
-
-      .result-retry,
-      .result-next {
-        width: 100%;
-      }
-    }
-
-    .card.just-solved {
-      animation: cardSettle 1s ease;
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.26),
-        0 0 0 3px color-mix(in srgb, var(--solved-color, var(--gold)) 32%, transparent),
-        0 0 20px color-mix(in srgb, var(--solved-color, var(--gold)) 56%, transparent);
-    }
-
-    .card.resolving {
-      pointer-events: none;
-    }
-
-    .card.hinted {
-      border-color: rgba(255, 255, 255, 0.35);
-    }
-
-    .card.hinted::after {
-      content: "";
-      position: absolute;
-      top: 8px;
-      right: 9px;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--hint-color, var(--gold));
-      box-shadow: 0 0 12px color-mix(in srgb, var(--hint-color, var(--gold)) 72%, transparent);
-      pointer-events: none;
-    }
-
-    .card.group-a.hinted { --hint-color: #f1c75b; }
-    .card.group-b.hinted { --hint-color: #74c69d; }
-    .card.group-c.hinted { --hint-color: #ff9f7a; }
-    .card.group-d.hinted { --hint-color: #8ea7ff; }
-
-    .card.wrong {
-      border-color: rgba(255, 122, 122, 0.8);
-      background: linear-gradient(180deg, #5d3541, #43252f);
-      animation: cardShake 0.28s ease;
-    }
-
-    .controls {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: clamp(10px, 1.8vw, 28px);
-    }
-
-    .control {
-      min-height: clamp(44px, 6.5vh, 58px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 18px;
-      background: rgba(8, 13, 27, 0.76);
-      color: var(--ink);
-      font-size: clamp(18px, 1.8vw, 26px);
-      font-weight: 300;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-
-    .control.primary {
-      background: rgba(8, 13, 27, 0.88);
-    }
-
-    .control:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    @media (max-width: 1200px) {
-      .app {
-        width: min(100vw - 16px, 1180px);
-        padding: 8px 0;
-        gap: 8px;
-      }
-
-      .top {
-        padding: 10px 14px;
-        gap: 12px;
-      }
-
-      .stage-select-header {
-        padding: 14px 18px;
-      }
-
-      .stage-map {
-        grid-auto-rows: minmax(78px, 1fr);
-      }
-
-      .stage-menu-button {
-        min-height: 0;
-      }
-
-      h1 {
-        font-size: clamp(44px, 6.2vw, 72px);
-      }
-
-      .subtitle {
-        margin-top: 8px;
-        font-size: 13px;
-      }
-
-      .score {
-        grid-template-columns: 138px 84px 78px;
-        gap: 8px;
-      }
-
-      .metric {
-        min-height: 52px;
-      }
-
-      .layout {
-        grid-template-columns: minmax(300px, 0.78fr) minmax(410px, 1fr);
-        gap: 10px;
-      }
-
-      .game-panel {
-        border-radius: 24px;
-        padding: 14px;
-        gap: 14px;
-      }
-
-      .image-card,
-      .reward-video {
-        border-radius: 24px;
-      }
-
-      .image-card {
-        height: min(45%, 22vw);
-      }
-
-      .image-card.group-a {
-        left: 10%;
-      }
-
-      .image-card.group-b {
-        right: 10%;
-      }
-
-      .image-card.group-c {
-        left: 10%;
-      }
-
-      .image-card.group-d {
-        right: 10%;
-      }
-
-      .word-grid {
-        gap: 10px 8px;
-      }
-
-      .card {
-        border-radius: 13px;
-        font-size: clamp(12px, 1.18vw, 15px);
-      }
-
-      .control {
-        min-height: 46px;
-        border-radius: 14px;
-        font-size: clamp(17px, 2vw, 22px);
-      }
-    }
-
-    @media (max-width: 720px) and (orientation: portrait) {
-      body {
-        overflow: auto;
-      }
-
-      .app {
-        width: min(100vw - 14px, 720px);
-        height: auto;
-        min-height: 100vh;
-        min-height: 100svh;
-        grid-template-rows: auto auto;
-      }
-
-      .top {
-        grid-template-columns: 1fr;
-        align-items: center;
-        box-shadow: none;
-      }
-
-      .app.selecting {
-        grid-template-rows: auto;
-      }
-
-      .stage-select-view {
-        min-height: 100svh;
-      }
-
-      .stage-select-header {
-        grid-template-columns: 1fr;
-        align-items: start;
-        gap: 12px;
-        box-shadow: none;
-      }
-
-      .stage-select-copy {
-        display: none;
-      }
-
-      .stage-summary {
-        width: 100%;
-        min-height: 52px;
-      }
-
-      .stage-map {
-        grid-template-columns: repeat(4, minmax(66px, 1fr));
-        grid-auto-rows: minmax(86px, 1fr);
-        gap: 8px;
-        padding: 10px;
-      }
-
-      .stage-number {
-        font-size: clamp(27px, 8vw, 42px);
-      }
-
-      .top-right {
-        width: 100%;
-        grid-template-columns: 1fr;
-      }
-
-      .stage-menu-button {
-        min-height: 0;
-      }
-
-      .eyebrow,
-      .subtitle {
-        display: none;
-      }
-
-      h1 {
-        font-size: clamp(38px, 12vw, 58px);
-        line-height: 0.9;
-      }
-
-      .score {
-        width: 100%;
-        grid-template-columns: minmax(116px, 1fr) minmax(68px, 0.66fr) minmax(68px, 0.66fr);
-        gap: 6px;
-      }
-
-      .metric {
-        min-height: 44px;
-      }
-
-      .metric small {
-        font-size: 10px;
-      }
-
-      .metric strong {
-        font-size: 20px;
-      }
-
-      .layout {
-        grid-template-columns: 1fr;
-        grid-template-rows: minmax(250px, 38svh) minmax(390px, auto);
-        gap: 10px;
-      }
-
-      .visual-zone {
-        height: 100%;
-        min-height: 250px;
-      }
-
-      .image-card {
-        height: 46%;
-      }
-
-      .image-card.group-a {
-        left: 10%;
-        top: 3%;
-      }
-
-      .image-card.group-b {
-        right: 10%;
-        top: 3%;
-      }
-
-      .image-card.group-c {
-        left: 10%;
-        bottom: 3%;
-      }
-
-      .image-card.group-d {
-        right: 10%;
-        bottom: 3%;
-      }
-
-      .game-panel {
-        min-height: 390px;
-      }
-
-      .word-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        grid-template-rows: repeat(4, minmax(54px, 1fr));
-        gap: 8px 6px;
-      }
-
-      .card {
-        min-height: 54px;
-        padding: 0 3px;
-        border-radius: 12px;
-        font-size: clamp(10px, 3vw, 13px);
-      }
-
-      .solved-row {
-        min-height: 54px;
-        border-radius: 12px;
-      }
-
-      .controls {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-      }
-
-      .control {
-        min-height: 46px;
-        border-radius: 13px;
-        font-size: clamp(15px, 4.2vw, 18px);
-      }
-    }
-
-    @media (max-width: 900px) and (orientation: landscape) {
-      .app {
-        width: min(100vw - 12px, 900px);
-        padding: 6px 0;
-        gap: 6px;
-      }
-
-      .top {
-        padding: 7px 10px;
-      }
-
-      .stage-select-header {
-        padding: 10px 14px;
-      }
-
-      .stage-select-copy {
-        display: none;
-      }
-
-      .stage-summary {
-        min-height: 48px;
-      }
-
-      .stage-map {
-        grid-template-columns: repeat(5, minmax(68px, 1fr));
-        grid-auto-rows: minmax(72px, 1fr);
-        gap: 7px;
-        padding: 10px;
-      }
-
-      .stage-tile {
-        border-radius: 14px;
-        padding: 9px 8px 8px;
-      }
-
-      .stage-number {
-        font-size: clamp(25px, 7vh, 38px);
-      }
-
-      .stage-stars {
-        font-size: 14px;
-      }
-
-      .top-right {
-        display: block;
-      }
-
-      .stage-menu-button {
-        min-height: 0;
-        font-size: 11px;
-      }
-
-      .score {
-        grid-template-columns: 126px 74px 70px;
-        gap: 6px;
-      }
-
-      .eyebrow,
-      .subtitle {
-        display: none;
-      }
-
-      h1 {
-        font-size: clamp(34px, 7vh, 48px);
-      }
-
-      .layout {
-        grid-template-columns: minmax(260px, 0.74fr) minmax(390px, 1fr);
-        gap: 8px;
-      }
-
-      .image-card {
-        height: min(45%, 20vw);
-      }
-
-      .image-card.group-a {
-        left: 10%;
-        top: 2%;
-      }
-
-      .image-card.group-b {
-        right: 10%;
-        top: 2%;
-      }
-
-      .image-card.group-c {
-        left: 10%;
-        bottom: 2%;
-      }
-
-      .image-card.group-d {
-        right: 10%;
-        bottom: 2%;
-      }
-
-      .game-panel {
-        padding: 10px;
-        gap: 10px;
-      }
-
-      .word-grid {
-        gap: 7px 6px;
-      }
-
-      .card {
-        border-radius: 10px;
-        font-size: 11px;
-      }
-
-      .control {
-        min-height: 38px;
-        border-radius: 11px;
-        font-size: 15px;
-      }
-    }
-
-    @keyframes cardSettle {
-      0% { filter: brightness(1); }
-      35% { filter: brightness(1.18); }
-      100% { filter: brightness(1); }
-    }
-
-    @keyframes rowReveal {
-      0% {
-        opacity: 0.55;
-        transform: translateY(10px) scale(0.985);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    @keyframes rewardGroupGlow {
-      0%, 100% {
-        box-shadow:
-          inset 0 1px 0 rgba(255, 255, 255, 0.34),
-          0 0 0 3px color-mix(in srgb, var(--solved-color, var(--gold)) 20%, transparent),
-          0 0 24px color-mix(in srgb, var(--solved-color, var(--gold)) 52%, transparent),
-          0 18px 38px rgba(0, 0, 0, 0.3);
-      }
-      50% {
-        box-shadow:
-          inset 0 1px 0 rgba(255, 255, 255, 0.42),
-          0 0 0 5px color-mix(in srgb, var(--solved-color, var(--gold)) 30%, transparent),
-          0 0 42px color-mix(in srgb, var(--solved-color, var(--gold)) 76%, transparent),
-          0 20px 46px rgba(0, 0, 0, 0.34);
-      }
-    }
-
-    @keyframes resultReveal {
-      0% {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes cardShake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-4px); }
-      75% { transform: translateX(4px); }
-    }
-
-    @keyframes imagePulse {
-      0% { transform: scale(1); }
-      45% { transform: scale(1.025); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes imageShake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>James and the Giant Peach · Connections</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #1a2044;
+    --navy-light: #243060;
+    --cream: #f5f0e8;
+    --cream-dark: #e8e0d0;
+    --text-muted: #6b7280;
+  }
+  body {
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 3rem;
+    gap: 1.5rem;
+  }
+  .game-section { width: 100%; max-width: 580px; }
+  .book-label { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
+  h2 { font-family: 'Libre Baskerville', serif; font-size: 24px; color: var(--navy); font-weight: 700; margin-bottom: 4px; text-align: center; }
+  .subtitle { font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 1.25rem; }
+  .mistakes-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 1.25rem; font-size: 13px; color: var(--text-muted); }
+  .dot { width: 13px; height: 13px; border-radius: 50%; display: inline-block; transition: background 0.3s; }
+  .dot.used { background: var(--cream-dark) !important; }
+  .solved-area { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+  .solved-row { border-radius: 10px; padding: 14px 18px; text-align: center; animation: popIn 0.35s ease; }
+  .solved-row .cat-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px; }
+  .solved-row .cat-words { font-size: 14px; font-weight: 500; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 1.25rem; }
+  .hint-panel { display: none; margin: 0 auto 1rem; padding: 14px; border-radius: 16px; background: #fffaf0; border: 1px solid #ded4c1; box-shadow: 0 10px 24px rgba(26, 32, 68, 0.08); animation: popIn 0.25s ease; }
+  .hint-panel.visible { display: block; }
+  .hint-visual { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
+  .hint-card { min-height: 92px; border-radius: 12px; background: var(--cream-dark); display: grid; place-items: center; gap: 5px; padding: 10px 8px; color: var(--navy); }
+  .hint-card svg { width: 42px; height: 42px; }
+  .hint-word { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .hint-caption { text-align: center; color: var(--navy); font-family: 'Libre Baskerville', serif; font-size: 17px; font-weight: 700; }
+  .tile { background: var(--cream-dark); border: none; border-radius: 10px; height: 76px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); cursor: pointer; transition: background 0.12s, transform 0.12s; user-select: none; }
+  .tile:hover { background: #d8d0c0; }
+  .tile.selected { background: var(--navy); color: var(--cream); }
+  .tile.shake { animation: shake 0.4s ease; }
+  .tile.pop { animation: pop 0.3s ease; }
+  .msg { text-align: center; font-size: 13px; color: var(--text-muted); min-height: 20px; margin-bottom: 10px; font-weight: 500; }
+  .msg.error { color: #c0392b; }
+  .msg.success { color: #1a7a4a; }
+  .actions { display: flex; gap: 10px; justify-content: center; }
+  .btn { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 9px 22px; border-radius: 999px; cursor: pointer; transition: background 0.12s; border: 1.5px solid var(--navy); background: transparent; color: var(--navy); }
+  .btn:hover { background: var(--cream-dark); }
+  .btn:disabled { opacity: 0.45; cursor: default; }
+  .btn.primary { background: var(--navy); color: var(--cream); }
+  .btn.primary:hover { background: var(--navy-light); }
+  .btn.primary:disabled { opacity: 0.3; cursor: default; }
+  .win-msg { text-align: center; padding: 1rem 0 0; font-family: 'Libre Baskerville', serif; font-size: 18px; color: var(--navy); display: none; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+  @keyframes popIn { 0%{opacity:0;transform:scaleY(0.8)} 100%{opacity:1;transform:scaleY(1)} }
+  @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.07)} 100%{transform:scale(1)} }
+</style>
 </head>
 <body>
-  <main class="app selecting" id="app">
-    <section class="stage-select-view" id="stageSelectView">
-      <div class="stage-select-header">
-        <div>
-          <div class="eyebrow">Stage Select</div>
-          <h1>Quintet</h1>
-          <p class="stage-select-copy">Clear a stage with at least one star to unlock the next one.</p>
-        </div>
-        <div class="stage-summary">
-          <div>
-            <small>Total Stars</small>
-            <strong id="totalStars">0/60</strong>
-          </div>
-        </div>
+
+<div class="game-section" id="game">
+  <p class="book-label" style="color:#2a7a3a; text-align:center;">James and the Giant Peach</p>
+  <h2>Connections</h2>
+  <p class="subtitle">Group the words into four categories. Select 4, then submit.</p>
+  <div class="mistakes-row">
+    <span>Mistakes remaining:</span>
+    <span class="dot" id="g2d0" style="background:var(--navy)"></span>
+    <span class="dot" id="g2d1" style="background:var(--navy)"></span>
+    <span class="dot" id="g2d2" style="background:var(--navy)"></span>
+    <span class="dot" id="g2d3" style="background:var(--navy)"></span>
+  </div>
+  <div class="solved-area" id="g2-solved"></div>
+  <div class="hint-panel" id="g2-hint" aria-live="polite">
+    <div class="hint-visual" aria-label="Hint for one category">
+      <div class="hint-card">
+        <svg viewBox="0 0 64 64" role="img" aria-label="Speak">
+          <path d="M13 23c0-7 7-12 17-12s17 5 17 12-7 12-17 12c-3 0-6-.4-8-1.4L13 39l2.2-9.4A11 11 0 0 1 13 23Z" fill="#1a2044"/>
+          <circle cx="26" cy="23" r="2.2" fill="#f5f0e8"/><circle cx="34" cy="23" r="2.2" fill="#f5f0e8"/>
+          <path d="M46 21c5 2 8 6 8 11 0 4-2 8-6 10l1.6 7-7-4c-2 .6-4 .9-7 .9-5 0-9-1.4-12-3.7" fill="none" stroke="#2a7a3a" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <div class="hint-word">Speak</div>
       </div>
-      <div class="stage-map" id="stageMap" aria-label="stage list"></div>
-    </section>
-
-    <section class="top" id="gameHeader" hidden>
-      <div>
-        <div class="eyebrow" id="stageLabel">Stage 1</div>
-        <h1>Quintet</h1>
+      <div class="hint-card">
+        <svg viewBox="0 0 64 64" role="img" aria-label="Tell">
+          <rect x="12" y="13" width="40" height="31" rx="7" fill="#1a2044"/>
+          <path d="M22 52l8-8h15" fill="none" stroke="#1a2044" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 24h20M22 32h14" stroke="#f5f0e8" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <div class="hint-word">Tell</div>
       </div>
-      <div class="top-right">
-        <div class="score">
-          <div class="metric"><div><small>MISTAKES REMAINING</small><div class="mistake-dots" id="mistakeDots"></div></div></div>
-          <div class="metric"><div><small>HINTS</small><div class="hint-dots" id="hintDots"></div></div></div>
-          <div class="pick-stack">
-            <button class="stage-menu-button" id="stageSelectButton" type="button">Stages</button>
-            <div class="metric"><div><small>PICKS</small><strong><span id="pickCount">0</span>/4</strong></div></div>
-          </div>
-        </div>
+      <div class="hint-card">
+        <svg viewBox="0 0 64 64" role="img" aria-label="Murmur">
+          <path d="M10 34c8-10 18-10 30 0M16 43c7-7 15-7 24 0" fill="none" stroke="#1a2044" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="45" cy="23" r="4" fill="#2a7a3a"/><circle cx="54" cy="19" r="2.5" fill="#2a7a3a"/>
+          <path d="M16 21h20" stroke="#1a2044" stroke-width="4" stroke-linecap="round" opacity=".35"/>
+        </svg>
+        <div class="hint-word">Murmur</div>
       </div>
-    </section>
+    </div>
+    <div class="hint-caption">Ways to talk</div>
+  </div>
+  <div class="grid" id="g2-grid"></div>
+  <p class="msg" id="g2-msg"></p>
+  <div class="actions">
+    <button class="btn" onclick="shuffleGame(game2State)">Shuffle</button>
+    <button class="btn" onclick="deselectAll(game2State)">Deselect all</button>
+    <button class="btn" id="g2-hint-btn" onclick="showHint(game2State)">Hint</button>
+    <button class="btn primary" id="g2-submit" onclick="submitGuess(game2State)" disabled>Submit</button>
+  </div>
+  <p class="win-msg" id="g2-win">Brilliant! You got them all!</p>
+</div>
 
-    <section class="layout" id="gameLayout" hidden>
-      <section class="visual-zone" id="visualZone" aria-label="word image area">
-        <div class="image-board" id="imageBoard">
-          <div class="image-card group-a" data-image-card="group-a">
-            <img src="assets/think.png" alt="group A visual clue" />
-        </div>
-        <div class="image-card group-b" data-image-card="group-b">
-          <div class="placeholder">B</div>
-        </div>
-        <div class="image-card group-c" data-image-card="group-c">
-          <div class="placeholder">C</div>
-        </div>
-        <div class="image-card group-d" data-image-card="group-d">
-          <div class="placeholder">D</div>
-        </div>
-        </div>
-        <video class="reward-video" id="rewardVideo" src="assets/reward.mp4" playsinline preload="auto"></video>
-      </section>
+<script>
+const GAME2_CATEGORIES = [
+  { name: "Ways to talk", words: ["TELL","SPEAK","MURMUR","WHISPER"], bg: "#e6c96e", text: "#4a3000", sub: "#6b4800" },
+  { name: "Insect companions", words: ["GRASSHOPPER","CENTIPEDE","EARTHWORM","LADYBUG"], bg: "#7ec8a0", text: "#0e3320", sub: "#1a5c38" },
+  { name: "Types of weather", words: ["MIST","FOG","SUNRISE","DRIZZLE"], bg: "#7aabda", text: "#0a2540", sub: "#163d6e" },
+  { name: "Words for sweetness", words: ["SWEET","RIPE","SUGAR","NECTAR"], bg: "#c49fe0", text: "#2a0f45", sub: "#4e1f80" }
+];
 
-      <aside class="game-panel">
-        <div class="message" id="message" aria-live="polite"></div>
-        <div class="word-grid" id="wordGrid"></div>
-        <div class="controls">
-          <button class="control primary" id="submit" disabled>Submit</button>
-          <button class="control" id="hint">Hint</button>
-          <button class="control" id="reset">Reset</button>
-        </div>
-      </aside>
-    </section>
-  </main>
+function createGameState(categories, prefix) {
+  return {
+    categories,
+    prefix,
+    remaining: categories.flatMap(c => c.words).sort(() => Math.random() - 0.5),
+    selected: [],
+    mistakes: 0,
+    solved: []
+  };
+}
 
-  <script>
-    const maxMistakes = 4;
-    const maxHints = 3;
-    const progressStorageKey = "quintet-stage-progress-v1";
+const game2State = createGameState(GAME2_CATEGORIES, 'g2');
 
-    function createPlaceholderStage(stageNumber) {
-      return {
-        title: `Stage ${stageNumber}`,
-        groups: {
-          "group-a": ["A1", "A2", "A3", "A4"],
-          "group-b": ["B1", "B2", "B3", "B4"],
-          "group-c": ["C1", "C2", "C3", "C4"],
-          "group-d": ["D1", "D2", "D3", "D4"]
-        },
-        groupLabels: {
-          "group-a": "GROUP A",
-          "group-b": "GROUP B",
-          "group-c": "GROUP C",
-          "group-d": "GROUP D"
-        },
-        groupDescriptions: {
-          "group-a": "Temporary group for this stage.",
-          "group-b": "Temporary group for this stage.",
-          "group-c": "Temporary group for this stage.",
-          "group-d": "Temporary group for this stage."
-        },
-        visuals: {
-          "group-a": { type: "placeholder", label: "A" },
-          "group-b": { type: "placeholder", label: "B" },
-          "group-c": { type: "placeholder", label: "C" },
-          "group-d": { type: "placeholder", label: "D" }
-        },
-        rewardGroup: "group-a",
-        rewardVideo: ""
-      };
-    }
+function renderGame(state) {
+  const grid = document.getElementById(state.prefix + '-grid');
+  grid.innerHTML = '';
+  state.remaining.forEach(word => {
+    const t = document.createElement('button');
+    t.className = 'tile' + (state.selected.includes(word) ? ' selected' : '');
+    t.textContent = word;
+    t.id = state.prefix + '-tile-' + word;
+    t.onclick = () => toggleTile(state, word);
+    grid.appendChild(t);
+  });
+  document.getElementById(state.prefix + '-submit').disabled = state.selected.length !== 4;
+  renderSolved(state);
+}
 
-    const firstStage = {
-      title: "Stage 1",
-      groups: {
-        "group-a": ["KNOW", "WONDER", "IMAGINE", "PICTURE"],
-        "group-b": ["COMIC", "NOTE", "WORK", "TEXT"],
-        "group-c": ["FANTASY", "ROMANCE", "HORROR", "COMEDY"],
-        "group-d": ["CLEVER", "WISE", "BRIGHT", "SHARP"]
-      },
-      groupLabels: {
-        "group-a": "ACTIONS IN YOUR HEAD",
-        "group-b": "___ BOOK",
-        "group-c": "STORY GENRES",
-        "group-d": "WORDS THAT MEAN SMART"
-      },
-      groupDescriptions: {
-        "group-a": "Things you can do inside your mind.",
-        "group-b": "Words that can come before book.",
-        "group-c": "Kinds of stories people read or watch.",
-        "group-d": "Different words for being smart."
-      },
-      visuals: {
-        "group-a": { type: "image", src: "assets/think.png", alt: "group A visual clue" },
-        "group-b": { type: "placeholder", label: "B" },
-        "group-c": { type: "placeholder", label: "C" },
-        "group-d": { type: "placeholder", label: "D" }
-      },
-      rewardGroup: "group-a",
-      rewardVideo: "assets/reward.mp4"
-    };
+function toggleTile(state, word) {
+  if (state.selected.includes(word)) {
+    state.selected = state.selected.filter(w => w !== word);
+  } else {
+    if (state.selected.length >= 4) return;
+    state.selected.push(word);
+  }
+  renderGame(state);
+}
 
-    const stages = [
-      firstStage,
-      ...Array.from({ length: 19 }, (_, index) => createPlaceholderStage(index + 2))
-    ];
+function shuffleGame(state) {
+  state.remaining = [...state.remaining].sort(() => Math.random() - 0.5);
+  state.selected = [];
+  setMsg(state, '');
+  renderGame(state);
+}
 
-    const app = document.getElementById("app");
-    const stageSelectView = document.getElementById("stageSelectView");
-    const stageMap = document.getElementById("stageMap");
-    const totalStars = document.getElementById("totalStars");
-    const gameHeader = document.getElementById("gameHeader");
-    const gameLayout = document.getElementById("gameLayout");
-    const stageSelectButton = document.getElementById("stageSelectButton");
-    const wordGrid = document.getElementById("wordGrid");
-    const message = document.getElementById("message");
-    const submit = document.getElementById("submit");
-    const hint = document.getElementById("hint");
-    const reset = document.getElementById("reset");
-    const stageLabel = document.getElementById("stageLabel");
-    const mistakeDots = document.getElementById("mistakeDots");
-    const hintDots = document.getElementById("hintDots");
-    const pickCount = document.getElementById("pickCount");
-    const visualZone = document.getElementById("visualZone");
-    const imageBoard = document.getElementById("imageBoard");
-    const rewardVideo = document.getElementById("rewardVideo");
+function deselectAll(state) {
+  state.selected = [];
+  setMsg(state, '');
+  renderGame(state);
+}
 
-    let stageProgress = loadStageProgress();
-    let currentStageIndex = 0;
-    let currentStage = stages[currentStageIndex];
-    let groups = currentStage.groups;
-    let groupLabels = currentStage.groupLabels;
-    let groupDescriptions = currentStage.groupDescriptions;
-    let rewardGroup = currentStage.rewardGroup;
-    let selected = new Set();
-    let matched = new Set();
-    let lockedWrong = new Set();
-    let submittedCombos = new Set();
-    let mistakesRemaining = maxMistakes;
-    let hintsRemaining = maxHints;
-    let revealedHints = new Set();
-    let cardWords = [];
-    let solved = false;
-    let solvedGroups = new Set();
-    let solvedGroupOrder = [];
-    let resolving = false;
-    let rewardActive = false;
-    let gameOver = false;
-    let attemptCount = 0;
-    let accuracyScore = 0;
-    let mistakeCount = 0;
-    let currentRunStars = 0;
-    let solveTimer = null;
-    let messageTimer = null;
+function showHint(state) {
+  const panel = document.getElementById(state.prefix + '-hint');
+  const button = document.getElementById(state.prefix + '-hint-btn');
+  if (!panel || !button) return;
+  panel.classList.add('visible');
+  button.textContent = 'Hint shown';
+  button.disabled = true;
+  setMsg(state, 'Hint revealed.', 'success');
+}
 
-    submit.addEventListener("click", submitAnswer);
-    hint.addEventListener("click", useHint);
-    reset.addEventListener("click", clearSelection);
-    stageSelectButton.addEventListener("click", showStageSelect);
+function setMsg(state, text, type) {
+  const el = document.getElementById(state.prefix + '-msg');
+  el.textContent = text;
+  el.className = 'msg' + (type ? ' ' + type : '');
+}
 
-    function loadStageProgress() {
-      try {
-        const saved = JSON.parse(localStorage.getItem(progressStorageKey) || "{}");
-        return stages.reduce((acc, _, index) => {
-          const value = Number(saved[index] || 0);
-          acc[index] = Math.max(0, Math.min(3, value));
-          return acc;
-        }, {});
-      } catch {
-        return {};
-      }
-    }
-
-    function saveStageProgress() {
-      localStorage.setItem(progressStorageKey, JSON.stringify(stageProgress));
-    }
-
-    function getStageStars(index) {
-      return stageProgress[index] || 0;
-    }
-
-    function saveStageStars(index, stars) {
-      if (stars <= getStageStars(index)) return;
-      stageProgress[index] = stars;
-      saveStageProgress();
-    }
-
-    function isStageUnlocked(index) {
-      if (index === 0) return true;
-      return getStageStars(index - 1) > 0;
-    }
-
-    function getTotalStars() {
-      return stages.reduce((sum, _, index) => sum + getStageStars(index), 0);
-    }
-
-    function getStarMarkup(stars) {
-      return Array.from({ length: 3 }, (_, index) =>
-        `<span class="${index < stars ? "filled" : "empty"}">${index < stars ? "★" : "☆"}</span>`
-      ).join("");
-    }
-
-    function renderStageSelect() {
-      stageMap.innerHTML = "";
-      totalStars.textContent = `${getTotalStars()}/${stages.length * 3}`;
-      stages.forEach((stage, index) => {
-        const stars = getStageStars(index);
-        const unlocked = isStageUnlocked(index);
-        const tile = document.createElement("button");
-        tile.type = "button";
-        tile.className = `stage-tile ${unlocked ? "unlocked" : "locked"} ${stars > 0 ? "completed" : ""}`;
-        tile.disabled = !unlocked;
-        tile.setAttribute("aria-label", `${stage.title}, ${stars} stars`);
-        tile.innerHTML = unlocked
-          ? `<span class="stage-number">${index + 1}</span><span class="star-rating stage-stars">${getStarMarkup(stars)}</span>`
-          : `<span class="stage-lock" aria-hidden="true">🔒</span><span class="star-rating stage-stars">${getStarMarkup(0)}</span>`;
-        tile.addEventListener("click", () => selectStage(index));
-        stageMap.appendChild(tile);
-      });
-    }
-
-    function showStageSelect() {
-      window.clearTimeout(solveTimer);
-      rewardVideo.pause();
-      app.classList.add("selecting");
-      stageSelectView.hidden = false;
-      gameHeader.hidden = true;
-      gameLayout.hidden = true;
-      renderStageSelect();
-    }
-
-    function showGame() {
-      app.classList.remove("selecting");
-      stageSelectView.hidden = true;
-      gameHeader.hidden = false;
-      gameLayout.hidden = false;
-    }
-
-    function selectStage(index) {
-      if (!isStageUnlocked(index)) return;
-      showGame();
-      setCurrentStage(index);
-    }
-
-    function setCurrentStage(index) {
-      currentStageIndex = index;
-      currentStage = stages[currentStageIndex];
-      groups = currentStage.groups;
-      groupLabels = currentStage.groupLabels;
-      groupDescriptions = currentStage.groupDescriptions;
-      rewardGroup = currentStage.rewardGroup;
-      start();
-    }
-
-    function hasNextStage() {
-      return currentStageIndex < stages.length - 1;
-    }
-
-    function goToNextStage() {
-      if (!hasNextStage()) return;
-      setCurrentStage(currentStageIndex + 1);
-    }
-
-    function createCardOptions() {
-      return Object.entries(groups).flatMap(([group, words]) =>
-        words.map((word, index) => ({ id: `${group}-${index}`, word, group }))
-      );
-    }
-
-    function renderVisualCards() {
-      imageBoard.innerHTML = "";
-      Object.keys(groups).forEach(group => {
-        const visual = currentStage.visuals[group] || { type: "placeholder", label: group.slice(-1).toUpperCase() };
-        const card = document.createElement("div");
-        card.className = `image-card ${group}`;
-        card.dataset.imageCard = group;
-
-        if (visual.type === "image") {
-          const image = document.createElement("img");
-          image.src = visual.src;
-          image.alt = visual.alt || `${groupLabels[group]} visual clue`;
-          card.appendChild(image);
-        } else {
-          const placeholder = document.createElement("div");
-          placeholder.className = "placeholder";
-          placeholder.textContent = visual.label || group.slice(-1).toUpperCase();
-          card.appendChild(placeholder);
-        }
-
-        imageBoard.appendChild(card);
-      });
-    }
-
-    function syncRewardVideo() {
-      rewardVideo.pause();
-      rewardVideo.currentTime = 0;
-      if (currentStage.rewardVideo) {
-        if (rewardVideo.getAttribute("src") !== currentStage.rewardVideo) {
-          rewardVideo.src = currentStage.rewardVideo;
-          rewardVideo.load();
-        }
-        return;
-      }
-      rewardVideo.removeAttribute("src");
-      rewardVideo.load();
-    }
-
-    function start() {
-      selected = new Set();
-      matched = new Set();
-      lockedWrong = new Set();
-      submittedCombos = new Set();
-      mistakesRemaining = maxMistakes;
-      hintsRemaining = maxHints;
-      revealedHints = new Set();
-      solved = false;
-      solvedGroups = new Set();
-      solvedGroupOrder = [];
-      resolving = false;
-      rewardActive = false;
-      gameOver = false;
-      attemptCount = 0;
-      accuracyScore = 0;
-      mistakeCount = 0;
-      currentRunStars = 0;
-      window.clearTimeout(solveTimer);
-      stageLabel.textContent = currentStage.title;
-      renderVisualCards();
-      syncRewardVideo();
-      cardWords = shuffle(createCardOptions());
-      hideMessage();
-      visualZone.classList.remove("rewarding");
-      clearRewardFocus();
-      clearGameOverFocus();
-      document.querySelectorAll("[data-image-card]").forEach(card => {
-        card.classList.remove("matched", "wrong-pulse");
-      });
-      renderCards();
-    }
-
-    function renderCards(options = {}) {
-      const { animate = false, justSolvedIds = new Set(), resolvingIds = new Set(), justSolvedGroup = null } = options;
-      const oldRects = new Map();
-      if (animate) {
-        document.querySelectorAll(".card").forEach(card => {
-          oldRects.set(card.dataset.cardId, card.getBoundingClientRect());
-        });
-      }
-
-      wordGrid.innerHTML = "";
-      if (gameOver) {
-        appendGameOverCard();
-        renderMistakes();
-        renderHints();
-        pickCount.textContent = selected.size;
-        submit.disabled = true;
-        hint.disabled = true;
-        return;
-      }
-
-      const visibleSolvedGroups = rewardActive
-        ? [rewardGroup, ...solvedGroupOrder.filter(group => group !== rewardGroup)]
-        : solvedGroupOrder;
-      visibleSolvedGroups.forEach(group => {
-        const row = document.createElement("div");
-        row.className = `solved-row ${group}`;
-        if (group === justSolvedGroup) row.classList.add("just-solved-row");
-        row.dataset.group = group;
-        row.innerHTML = `<strong>${groupLabels[group]}</strong><span>${groups[group].join(" · ")}</span><small>${groupDescriptions[group]}</small>`;
-        wordGrid.appendChild(row);
-      });
-
-      if (rewardActive) appendResultCard();
-
-      cardWords.filter(card => !solvedGroups.has(card.group)).forEach(card => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = `card ${card.group}`;
-        button.dataset.cardId = card.id;
-        button.dataset.word = card.word;
-        button.dataset.group = card.group;
-        button.innerHTML = `<span class="card-label">${card.word}</span>`;
-        if (selected.has(card.id)) button.classList.add("selected");
-        if (revealedHints.has(card.id)) button.classList.add("hinted");
-        if (matched.has(card.id)) button.classList.add("correct");
-        if (justSolvedIds.has(card.id)) button.classList.add("just-solved");
-        if (resolvingIds.has(card.id)) button.classList.add("resolving");
-        if (lockedWrong.has(card.id)) button.classList.add("wrong");
-        button.addEventListener("click", () => toggleWord(card.id));
-        wordGrid.appendChild(button);
-      });
-      renderMistakes();
-      renderHints();
-      pickCount.textContent = selected.size;
-      submit.disabled = rewardActive || resolving || selected.size !== 4 || solvedGroups.size === Object.keys(groups).length;
-      hint.disabled = rewardActive || resolving || solved || hintsRemaining <= 0 || !hasHintCandidate();
-      if (animate) animateCardsFrom(oldRects);
-    }
-
-    function appendResultCard() {
-      const stats = getResultStats();
-      const result = document.createElement("div");
-      result.className = "result-card";
-      result.innerHTML = `
-        <div class="result-title">
-          <span>Result</span>
-          <strong>Scorecard</strong>
-        </div>
-        <div class="result-stats">
-          <div class="result-stat"><small>Stars</small><strong class="star-rating result-star-rating">${getStarMarkup(stats.stars)}</strong></div>
-          <div class="result-stat"><small>Attempts</small><strong>${stats.attempts}</strong></div>
-          <div class="result-stat"><small>Mistakes</small><strong>${stats.mistakes}</strong></div>
-          <div class="result-stat"><small>Hints</small><strong>${stats.hints}</strong></div>
-        </div>
-        <div class="result-actions">
-          ${hasNextStage() ? `<button type="button" class="result-next">Next Stage</button>` : ""}
-          <button type="button" class="result-retry">Retry</button>
-        </div>
-      `;
-      const nextButton = result.querySelector(".result-next");
-      if (nextButton) nextButton.addEventListener("click", goToNextStage);
-      result.querySelector(".result-retry").addEventListener("click", start);
-      wordGrid.appendChild(result);
-    }
-
-    function appendGameOverCard() {
-      const stats = getGameOverStats();
-      const result = document.createElement("div");
-      result.className = "result-card game-over-card";
-      result.innerHTML = `
-        <div class="result-title">
-          <span>Game Over</span>
-          <strong>Scorecard</strong>
-        </div>
-        <div class="result-stats">
-          <div class="result-stat"><small>Stars</small><strong class="star-rating result-star-rating">${getStarMarkup(0)}</strong></div>
-          <div class="result-stat"><small>Solved</small><strong>${stats.solved}</strong></div>
-          <div class="result-stat"><small>Mistakes</small><strong>${stats.mistakes}</strong></div>
-          <div class="result-stat"><small>Hints</small><strong>${stats.hints}</strong></div>
-        </div>
-        <div class="result-actions">
-          <button type="button" class="result-retry">Retry</button>
-        </div>
-      `;
-      result.querySelector(".result-retry").addEventListener("click", start);
-      wordGrid.appendChild(result);
-    }
-
-    function getResultStats() {
-      return {
-        stars: currentRunStars,
-        attempts: attemptCount,
-        mistakes: mistakeCount,
-        hints: maxHints - hintsRemaining
-      };
-    }
-
-    function getGameOverStats() {
-      const stats = getResultStats();
-      return {
-        ...stats,
-        solved: `${solvedGroups.size}/${Object.keys(groups).length}`
-      };
-    }
-
-    function calculateStars() {
-      const hintsUsed = maxHints - hintsRemaining;
-      if (mistakeCount === 0 && hintsUsed === 0) return 3;
-      if (mistakeCount <= 2 && hintsUsed <= 1) return 2;
-      return 1;
-    }
-
-    function toggleWord(cardId) {
-      if (gameOver || solved || resolving || matched.has(cardId)) return;
-      if (!selected.has(cardId) && selected.size >= 4) {
-        setMessage("Four words already selected. Deselect one to choose another.", 1600);
-        return;
-      }
-      lockedWrong.clear();
-      if (selected.has(cardId)) {
-        selected.delete(cardId);
-      } else if (selected.size < 4) {
-        selected.add(cardId);
-      }
-      if (selected.size === 4) {
-        setMessage("Four words selected. Press Submit to check.", 1400);
+function submitGuess(state) {
+  if (state.selected.length !== 4) return;
+  const match = state.categories.find(c =>
+    !state.solved.includes(c) &&
+    c.words.every(w => state.selected.includes(w)) &&
+    state.selected.every(w => c.words.includes(w))
+  );
+  if (match) {
+    state.selected.forEach(w => {
+      const el = document.getElementById(state.prefix + '-tile-' + w);
+      if (el) el.classList.add('pop');
+    });
+    setTimeout(() => {
+      state.solved.push(match);
+      state.remaining = state.remaining.filter(w => !match.words.includes(w));
+      state.selected = [];
+      if (state.solved.length === state.categories.length) {
+        setMsg(state, '');
+        document.getElementById(state.prefix + '-win').style.display = 'block';
       } else {
-        hideMessage();
+        setMsg(state, 'Correct!', 'success');
       }
-      renderCards();
+      renderGame(state);
+    }, 300);
+  } else {
+    const oneAway = state.categories.find(c =>
+      !state.solved.includes(c) &&
+      c.words.filter(w => state.selected.includes(w)).length === 3
+    );
+    state.mistakes++;
+    document.getElementById(state.prefix + 'd' + (state.mistakes - 1)).classList.add('used');
+    state.selected.forEach(w => {
+      const el = document.getElementById(state.prefix + '-tile-' + w);
+      if (el) { el.classList.add('shake'); setTimeout(() => el.classList.remove('shake'), 420); }
+    });
+    if (state.mistakes >= 4) {
+      setMsg(state, 'No more guesses — revealing answers.', 'error');
+      setTimeout(() => revealAll(state), 900);
+    } else {
+      setMsg(state, oneAway ? 'One away!' : 'Not quite — try again.', 'error');
     }
+    state.selected = [];
+    setTimeout(() => renderGame(state), 430);
+  }
+}
 
-    function matchImage(group) {
-      const card = document.querySelector(`[data-image-card="${group}"]`);
-      if (!card) return;
-      card.classList.remove("matched");
-      void card.offsetWidth;
-      card.classList.add("matched");
-    }
+function revealAll(state) {
+  state.categories.filter(c => !state.solved.includes(c)).forEach(c => {
+    state.solved.push(c);
+    state.remaining = state.remaining.filter(w => !c.words.includes(w));
+  });
+  renderGame(state);
+}
 
-    function submitAnswer() {
-      const selectedIds = [...selected];
-      const comboKey = selectedIds.slice().sort().join("|");
-      if (submittedCombos.has(comboKey)) {
-        setMessage("Already tried. Pick a different set.", 1800);
-        lockedWrong = new Set(selectedIds);
-        renderCards();
-        window.setTimeout(() => {
-          lockedWrong.clear();
-          renderCards();
-        }, 420);
-        return;
-      }
-      submittedCombos.add(comboKey);
-      const selectedCards = selectedIds.map(id => cardWords.find(card => card.id === id));
-      const selectedGroups = new Set(selectedCards.map(card => card && card.group));
-      const solvedGroup = selectedCards[0] && selectedCards[0].group;
-      const allCorrect = selectedGroups.size === 1 && solvedGroup && !solvedGroups.has(solvedGroup);
-      const matchScore = getLargestGroupCount(selectedCards);
-      attemptCount += 1;
-      accuracyScore += matchScore;
-      if (allCorrect) {
-        resolving = true;
-        selectedIds.forEach(id => matched.add(id));
-        selected.clear();
-        moveGroupToFront(solvedGroup);
-        matchImage(solvedGroup);
-        setMessage(`Correct. ${groupLabels[solvedGroup]} found.`, 1800);
-        solveTimer = window.setTimeout(() => {
-          finalizeSolvedGroup(solvedGroup);
-        }, 1180);
-      } else {
-        if (mistakesRemaining > 0) mistakesRemaining -= 1;
-        mistakeCount += 1;
-        lockedWrong = new Set(selectedIds);
-        const oneAway = matchScore === 3;
-        if (mistakesRemaining === 0) {
-          gameOver = true;
-          selected.clear();
-          lockedWrong.clear();
-          hideMessage();
-          renderCards();
-          showGameOverFocus();
-          return;
-        }
-        setMessage(getWrongMessage(oneAway), 1800);
-        window.setTimeout(() => {
-          lockedWrong.clear();
-          renderCards();
-        }, 420);
-      }
-      renderCards(allCorrect
-        ? { animate: true, justSolvedIds: new Set(selectedIds), resolvingIds: new Set(selectedIds) }
-        : {});
-    }
+function renderSolved(state) {
+  const area = document.getElementById(state.prefix + '-solved');
+  area.innerHTML = '';
+  state.solved.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'solved-row';
+    row.style.background = c.bg;
+    row.innerHTML = `<div class="cat-label" style="color:${c.text}">${c.name}</div><div class="cat-words" style="color:${c.sub}">${c.words.join(' · ')}</div>`;
+    area.appendChild(row);
+  });
+}
 
-    function useHint() {
-      if (gameOver || solved || resolving || hintsRemaining <= 0) return;
-      const revealed = revealPairHint();
-      if (!revealed) {
-        renderCards();
-        return;
-      }
-      hintsRemaining -= 1;
-      selected.clear();
-      lockedWrong.clear();
-      hideMessage();
-      renderCards();
-    }
-
-    function revealPairHint() {
-      const hintGroup = getHintCandidateGroup();
-      if (!hintGroup) return false;
-      const hintCards = cardWords
-        .filter(card => card.group === hintGroup && !revealedHints.has(card.id))
-        .slice(0, 2);
-      hintCards.forEach(card => revealedHints.add(card.id));
-      return hintCards.length > 0;
-    }
-
-    function hasHintCandidate() {
-      return Boolean(getHintCandidateGroup());
-    }
-
-    function getHintCandidateGroup() {
-      const unsolvedGroups = Object.keys(groups).filter(group => !solvedGroups.has(group));
-      const freshGroup = unsolvedGroups.find(group => {
-        const groupCards = cardWords.filter(card => card.group === group);
-        const revealedCount = groupCards.filter(card => revealedHints.has(card.id)).length;
-        return revealedCount === 0 && groupCards.length >= 2;
-      });
-      if (freshGroup) return freshGroup;
-      return unsolvedGroups.find(group =>
-        cardWords.filter(card => card.group === group && !revealedHints.has(card.id)).length >= 2
-      );
-    }
-
-    function clearSelection() {
-      if (gameOver || resolving) return;
-      if (selected.size === 0 && lockedWrong.size === 0) return;
-      selected.clear();
-      lockedWrong.clear();
-      hideMessage();
-      renderCards();
-    }
-
-    function finalizeSolvedGroup(group) {
-      if (solvedGroups.has(group)) return;
-      solvedGroups.add(group);
-      solvedGroupOrder.push(group);
-      resolving = false;
-      reorderCards();
-      renderCards({ justSolvedGroup: group });
-      if (solvedGroups.size === Object.keys(groups).length) {
-        solved = true;
-        window.setTimeout(playReward, 1100);
-      }
-    }
-
-    function moveGroupToFront(group) {
-      const groupCards = groups[group]
-        .map((word, index) => cardWords.find(card => card.id === `${group}-${index}` && card.word === word))
-        .filter(Boolean);
-      const remainingCards = cardWords.filter(card => card.group !== group);
-      cardWords = [...groupCards, ...remainingCards];
-    }
-
-    function reorderCards() {
-      const remainingCards = cardWords.filter(card => !solvedGroups.has(card.group));
-      cardWords = [...remainingCards];
-    }
-
-    function animateCardsFrom(oldRects) {
-      const cards = [...wordGrid.querySelectorAll(".card")];
-      cards.forEach(card => {
-        const oldRect = oldRects.get(card.dataset.cardId);
-        if (!oldRect) return;
-        const newRect = card.getBoundingClientRect();
-        const dx = oldRect.left - newRect.left;
-        const dy = oldRect.top - newRect.top;
-        if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
-        card.style.transition = "none";
-        card.style.transform = `translate(${dx}px, ${dy}px)`;
-      });
-      void wordGrid.offsetWidth;
-      cards.forEach(card => {
-        if (!card.style.transform) return;
-        card.style.transition = "transform 1000ms cubic-bezier(0.22, 1, 0.36, 1), border-color 0.18s ease, background 0.18s ease";
-        card.style.transform = "";
-      });
-      window.setTimeout(() => {
-        cards.forEach(card => {
-          card.style.transition = "";
-          card.style.transform = "";
-        });
-      }, 1080);
-    }
-
-    function getLargestGroupCount(cards) {
-      const counts = cards.reduce((acc, card) => {
-        if (!card || solvedGroups.has(card.group)) return acc;
-        acc[card.group] = (acc[card.group] || 0) + 1;
-        return acc;
-      }, {});
-      return Math.max(0, ...Object.values(counts));
-    }
-
-    function getWrongMessage(oneAway) {
-      if (mistakesRemaining === 0) {
-        return oneAway
-          ? "One away. No mistakes remaining."
-          : "Not quite. No mistakes remaining.";
-      }
-      return oneAway ? "One away." : "Not quite.";
-    }
-
-    function renderMistakes() {
-      mistakeDots.innerHTML = "";
-      for (let i = 0; i < maxMistakes; i += 1) {
-        const dot = document.createElement("span");
-        dot.className = "mistake-dot";
-        if (i >= mistakesRemaining) dot.classList.add("used");
-        mistakeDots.appendChild(dot);
-      }
-    }
-
-    function renderHints() {
-      hintDots.innerHTML = "";
-      for (let i = 0; i < maxHints; i += 1) {
-        const dot = document.createElement("span");
-        dot.className = "hint-dot";
-        if (i >= hintsRemaining) dot.classList.add("used");
-        hintDots.appendChild(dot);
-      }
-    }
-
-    function playReward() {
-      if (currentStage.rewardVideo) visualZone.classList.add("rewarding");
-      rewardActive = true;
-      currentRunStars = calculateStars();
-      saveStageStars(currentStageIndex, currentRunStars);
-      renderCards();
-      focusRewardGroup(rewardGroup);
-      if (!currentStage.rewardVideo) return;
-      rewardVideo.currentTime = 0;
-      rewardVideo.play().catch(() => {
-        setMessage("Quintet complete. Tap the video area if playback is blocked.", 2400);
-      });
-    }
-
-    function focusRewardGroup(group) {
-      document.querySelector(".game-panel").classList.add("reward-mode");
-      wordGrid.classList.add("reward-focus");
-      wordGrid.querySelectorAll(".solved-row").forEach(row => {
-        row.classList.remove("just-solved-row");
-        row.classList.toggle("reward-target", row.dataset.group === group);
-      });
-    }
-
-    function showGameOverFocus() {
-      document.querySelector(".game-panel").classList.add("game-over-mode");
-      wordGrid.classList.add("game-over-focus");
-    }
-
-    function clearRewardFocus() {
-      document.querySelector(".game-panel").classList.remove("reward-mode");
-      wordGrid.classList.remove("reward-focus");
-      wordGrid.querySelectorAll(".solved-row").forEach(row => {
-        row.classList.remove("reward-target");
-      });
-    }
-
-    function clearGameOverFocus() {
-      document.querySelector(".game-panel").classList.remove("game-over-mode");
-      wordGrid.classList.remove("game-over-focus");
-    }
-
-    function setMessage(text, duration = 1600) {
-      window.clearTimeout(messageTimer);
-      message.textContent = text;
-      message.classList.add("visible");
-      messageTimer = window.setTimeout(hideMessage, duration);
-    }
-
-    function hideMessage() {
-      window.clearTimeout(messageTimer);
-      message.classList.remove("visible");
-    }
-
-    function shuffle(list) {
-      const copy = [...list];
-      for (let i = copy.length - 1; i > 0; i -= 1) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
-      return copy;
-    }
-
-    renderStageSelect();
-  </script>
+renderGame(game2State);
+</script>
 </body>
 </html>
