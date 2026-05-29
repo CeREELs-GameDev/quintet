@@ -60,6 +60,9 @@
   .btn.primary:not(:disabled):hover { background: var(--navy-light); }
   .btn.primary:disabled { opacity: 0.3; cursor: default; }
   .win-msg { text-align: center; padding: 1rem 0 0; font-family: 'Libre Baskerville', serif; font-size: 18px; color: var(--navy); display: none; }
+  .retry-area { display: none; justify-content: center; }
+  .game-section.complete .actions { display: none; }
+  .game-section.complete .retry-area { display: flex; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
   @keyframes popIn { 0%{opacity:0;transform:scaleY(0.8)} 100%{opacity:1;transform:scaleY(1)} }
   @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.07)} 100%{transform:scale(1)} }
@@ -86,6 +89,7 @@
     .actions { gap: 8px; }
     .btn { padding: 7px 16px; font-size: 12px; }
     .win-msg { padding-top: 0.45rem; font-size: 15px; }
+    .retry-area { margin-top: 1.4rem; }
     .hint-panel { top: 20px; width: min(390px, calc(100vw - 42px)); }
     .hint-image { max-height: min(390px, 60vh); }
   }
@@ -130,6 +134,9 @@
     <button class="btn" id="g2-deselect-btn" onclick="deselectAll(game2State)">Deselect all</button>
     <button class="btn" id="g2-hint-btn" onclick="toggleHint(game2State)">Hint</button>
     <button class="btn primary" id="g2-submit" onclick="submitGuess(game2State)" disabled>Submit</button>
+  </div>
+  <div class="retry-area" id="g2-retry-area">
+    <button class="btn primary" id="g2-retry-btn" onclick="retryGame()">Retry</button>
   </div>
   <p class="win-msg" id="g2-win">Brilliant! You got them all!</p>
 </div>
@@ -333,10 +340,15 @@ function isGameComplete(state) {
 
 function endGame(state) {
   hideHint(state);
+  document.getElementById('game').classList.add('complete');
   ['shuffle', 'deselect', 'hint', 'submit'].forEach(name => {
     const button = document.getElementById(`${state.prefix}-${name}-btn`);
     if (button) button.disabled = true;
   });
+}
+
+function retryGame() {
+  window.location.reload();
 }
 
 renderGame(game2State);
