@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>James and the Giant Peach · Connections</title>
+<title>THE LAST CUENTISTA · Connections</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,12 +38,16 @@
   .solved-row .cat-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px; }
   .solved-row .cat-words { font-size: 14px; font-weight: 500; }
   .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 1.25rem; }
-  .hint-panel { display: none; position: absolute; z-index: 10; top: 14px; left: 50%; width: min(308px, calc(100vw - 42px)); pointer-events: none; transform: translateX(-50%); animation: floatHint 0.24s ease; }
+  .hint-panel { display: none; position: absolute; z-index: 10; top: 32px; left: 50%; width: min(308px, calc(100vw - 42px)); pointer-events: none; transform: translateX(-50%); animation: floatHint 0.24s ease; }
   .hint-panel.visible { display: block; }
-  .hint-visual { height: 374px; border: 1.5px solid rgba(26, 32, 68, 0.18); border-radius: 42px; background: rgba(255, 252, 246, 0.96); display: grid; place-items: center; padding: 34px 22px; box-shadow: 0 22px 54px rgba(26, 32, 68, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.76); }
+  .hint-visual { border: 1.5px solid rgba(26, 32, 68, 0.18); border-radius: 42px; background: rgba(255, 252, 246, 0.96); display: flex; align-items: center; justify-content: center; padding: 16px; overflow: hidden; box-shadow: 0 22px 54px rgba(26, 32, 68, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.76); }
+  .hint-image { display: block; width: 100%; height: auto; max-height: min(390px, 58vh); object-fit: contain; border-radius: 30px; }
+  .hint-image[hidden] { display: none; }
+  .hint-placeholder { width: 82px; height: 82px; border-radius: 28px; background: var(--cream); display: grid; place-items: center; box-shadow: inset 0 0 0 1px #e8e0d0; }
+  .hint-placeholder[hidden] { display: none; }
   .hint-icon { width: 82px; height: 82px; border-radius: 28px; background: var(--cream); display: grid; place-items: center; box-shadow: inset 0 0 0 1px #e8e0d0; }
   .hint-icon svg { width: 54px; height: 54px; }
-  .hint-caption { width: 100%; margin: 10px auto 0; padding: 7px 12px 8px; border: 1.5px solid rgba(26, 32, 68, 0.18); border-radius: 12px; background: rgba(245, 240, 232, 0.96); text-align: center; color: var(--navy); font-family: 'Libre Baskerville', serif; font-size: 18px; font-weight: 700; line-height: 1.15; box-shadow: 0 8px 20px rgba(26, 32, 68, 0.08); }
+  .hint-caption { width: 100%; margin: 10px auto 0; padding: 7px 18px 8px; border: 1.5px solid rgba(26, 32, 68, 0.18); border-radius: 12px; background: rgba(245, 240, 232, 0.96); text-align: center; color: var(--navy); font-family: 'Libre Baskerville', serif; font-size: 18px; font-weight: 700; line-height: 1.15; white-space: nowrap; box-shadow: 0 8px 20px rgba(26, 32, 68, 0.08); }
   .tile { background: var(--cream-dark); border: none; border-radius: 10px; height: 76px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--navy); cursor: pointer; transition: background 0.12s, transform 0.12s; user-select: none; }
   .tile:hover { background: #d8d0c0; }
   .tile.selected { background: var(--navy); color: var(--cream); }
@@ -65,15 +69,15 @@
   @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.07)} 100%{transform:scale(1)} }
   @keyframes floatHint { 0%{opacity:0;transform:translateX(-50%) translateY(-8px) scale(.98)} 100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)} }
   @media (max-width: 620px) {
-    .hint-panel { top: 22px; width: min(292px, calc(100vw - 32px)); }
-    .hint-visual { height: 344px; border-radius: 44px; }
+    .hint-panel { top: 36px; width: min(292px, calc(100vw - 32px)); }
+    .hint-visual { border-radius: 44px; }
   }
 </style>
 </head>
 <body>
 
 <div class="game-section" id="game">
-  <p class="book-label" style="color:#2a7a3a; text-align:center;">James and the Giant Peach</p>
+  <p class="book-label" style="color:#f0642f; text-align:center;">THE LAST CUENTISTA</p>
   <h2>Connections</h2>
   <p class="subtitle">Group the words into four categories. Select 4, then submit.</p>
   <div class="mistakes-row">
@@ -86,8 +90,9 @@
   <div class="solved-area" id="g2-solved"></div>
   <div class="hint-blocker" id="g2-hint-blocker" aria-hidden="true" onclick="hideHint(game2State)"></div>
   <div class="hint-panel" id="g2-hint" aria-live="polite">
-    <div class="hint-visual" aria-label="Hint for one category">
-      <div class="hint-icon">
+    <div class="hint-visual" id="g2-hint-visual" aria-label="Hint for one category">
+      <img class="hint-image" id="g2-hint-image" alt="" hidden>
+      <div class="hint-placeholder" id="g2-hint-placeholder">
         <svg viewBox="0 0 64 64" role="img" aria-label="Talk">
           <path d="M13 23c0-7 7-12 17-12s17 5 17 12-7 12-17 12c-3 0-6-.4-8-1.4L13 39l2.2-9.4A11 11 0 0 1 13 23Z" fill="#1a2044"/>
           <circle cx="26" cy="23" r="2.2" fill="#f5f0e8"/><circle cx="34" cy="23" r="2.2" fill="#f5f0e8"/>
@@ -95,7 +100,7 @@
         </svg>
       </div>
     </div>
-    <div class="hint-caption">Ways to talk</div>
+    <div class="hint-caption" id="g2-hint-caption">ACTIONS IN YOUR HEAD</div>
   </div>
   <div class="grid" id="g2-grid"></div>
   <p class="msg" id="g2-msg"></p>
@@ -110,10 +115,10 @@
 
 <script>
 const GAME2_CATEGORIES = [
-  { name: "Ways to talk", words: ["TELL","SPEAK","MURMUR","WHISPER"], bg: "#e6c96e", text: "#4a3000", sub: "#6b4800" },
-  { name: "Insect companions", words: ["GRASSHOPPER","CENTIPEDE","EARTHWORM","LADYBUG"], bg: "#7ec8a0", text: "#0e3320", sub: "#1a5c38" },
-  { name: "Types of weather", words: ["MIST","FOG","SUNRISE","DRIZZLE"], bg: "#7aabda", text: "#0a2540", sub: "#163d6e" },
-  { name: "Words for sweetness", words: ["SWEET","RIPE","SUGAR","NECTAR"], bg: "#c49fe0", text: "#2a0f45", sub: "#4e1f80" }
+  { name: "ACTIONS IN YOUR HEAD", words: ["KNOW","WONDER","IMAGINE","PICTURE"], bg: "#e6c96e", text: "#4a3000", sub: "#6b4800", hintImage: "assets/hints/actions-in-your-head.png" },
+  { name: "MASSIVE CATASTROPHE", words: ["ARMAGEDDON","APOCALYPSE","DOOMSDAY","DESTRUCTION"], bg: "#7ec8a0", text: "#0e3320", sub: "#1a5c38", hintImage: "assets/hints/massive-catastrophe.png" },
+  { name: "21ST CENTURY SCI-FI MOVIES", words: ["MARTIAN","ARRIVAL","GRAVITY","ELYSIUM"], bg: "#7aabda", text: "#0a2540", sub: "#163d6e", hintImage: "assets/hints/scifi-movies.png" },
+  { name: "PARTS OF PLANET", words: ["ORBIT","CORE","MANTLE","CRUST"], bg: "#c49fe0", text: "#2a0f45", sub: "#4e1f80", hintImage: "assets/hints/parts-of-a-planet.png" }
 ];
 
 function createGameState(categories, prefix) {
@@ -123,7 +128,8 @@ function createGameState(categories, prefix) {
     remaining: categories.flatMap(c => c.words).sort(() => Math.random() - 0.5),
     selected: [],
     mistakes: 0,
-    solved: []
+    solved: [],
+    hintIndex: 0
   };
 }
 
@@ -142,7 +148,6 @@ function renderGame(state) {
     grid.appendChild(t);
   });
   document.getElementById(state.prefix + '-submit').disabled = state.selected.length !== 4;
-  renderSolved(state);
 }
 
 function toggleTile(state, word) {
@@ -174,9 +179,11 @@ function showHint(state) {
   const button = document.getElementById(state.prefix + '-hint-btn');
   if (!panel || !blocker || !button) return;
   clearTimeout(hintTimer);
+  renderHint(state);
   panel.classList.add('visible');
   blocker.classList.add('visible');
   button.disabled = true;
+  fitHintCaption(state);
   setMsg(state, 'Hint revealed.', 'success');
   hintTimer = setTimeout(() => hideHint(state), 3000);
 }
@@ -191,6 +198,62 @@ function hideHint(state) {
   if (blocker) blocker.classList.remove('visible');
   if (button) button.disabled = false;
   setMsg(state, '');
+}
+
+function renderHint(state) {
+  const caption = document.getElementById(state.prefix + '-hint-caption');
+  const image = document.getElementById(state.prefix + '-hint-image');
+  const placeholder = document.getElementById(state.prefix + '-hint-placeholder');
+  const category = getNextHintCategory(state);
+  if (!caption || !image || !placeholder || !category) return;
+  caption.textContent = category.name;
+  if (category.hintImage) {
+    image.src = category.hintImage;
+    image.alt = category.name;
+    image.hidden = false;
+    placeholder.hidden = true;
+  } else {
+    image.hidden = true;
+    image.removeAttribute('src');
+    image.alt = '';
+    placeholder.hidden = false;
+  }
+}
+
+function fitHintCaption(state) {
+  const caption = document.getElementById(state.prefix + '-hint-caption');
+  if (!caption) return;
+  caption.style.fontSize = '18px';
+  const style = getComputedStyle(caption);
+  const horizontalPadding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+  const availableWidth = caption.clientWidth - horizontalPadding - 18;
+  const minSize = 12;
+  let size = 18;
+  while (size > minSize && measureHintCaption(caption, size) > availableWidth) {
+    size -= 1;
+    caption.style.fontSize = size + 'px';
+  }
+}
+
+function measureHintCaption(caption, size) {
+  const style = getComputedStyle(caption);
+  const canvas = measureHintCaption.canvas || (measureHintCaption.canvas = document.createElement('canvas'));
+  const context = canvas.getContext('2d');
+  context.font = `${style.fontStyle} ${style.fontVariant} ${style.fontWeight} ${size}px ${style.fontFamily}`;
+  return context.measureText(caption.textContent).width;
+}
+
+function getNextHintCategory(state) {
+  const categories = state.categories;
+  for (let i = 0; i < categories.length; i++) {
+    const index = (state.hintIndex + i) % categories.length;
+    const category = categories[index];
+    if (!state.solved.includes(category)) {
+      state.hintIndex = (index + 1) % categories.length;
+      return category;
+    }
+  }
+  return categories[0];
 }
 
 function setMsg(state, text, type) {
@@ -222,6 +285,7 @@ function submitGuess(state) {
         setMsg(state, 'Correct!', 'success');
       }
       renderGame(state);
+      renderSolved(state);
     }, 300);
   } else {
     const oneAway = state.categories.find(c =>
@@ -251,14 +315,17 @@ function revealAll(state) {
     state.remaining = state.remaining.filter(w => !c.words.includes(w));
   });
   renderGame(state);
+  renderSolved(state);
 }
 
 function renderSolved(state) {
   const area = document.getElementById(state.prefix + '-solved');
-  area.innerHTML = '';
+  const rendered = new Set(Array.from(area.children).map(row => row.dataset.category));
   state.solved.forEach(c => {
+    if (rendered.has(c.name)) return;
     const row = document.createElement('div');
     row.className = 'solved-row';
+    row.dataset.category = c.name;
     row.style.background = c.bg;
     row.innerHTML = `<div class="cat-label" style="color:${c.text}">${c.name}</div><div class="cat-words" style="color:${c.sub}">${c.words.join(' · ')}</div>`;
     area.appendChild(row);
