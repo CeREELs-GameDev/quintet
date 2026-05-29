@@ -54,10 +54,10 @@
   .msg.success { color: #1a7a4a; }
   .actions { display: flex; gap: 10px; justify-content: center; }
   .btn { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 9px 22px; border-radius: 999px; cursor: pointer; transition: background 0.12s; border: 1.5px solid var(--navy); background: transparent; color: var(--navy); }
-  .btn:hover { background: var(--cream-dark); }
+  .btn:not(:disabled):hover { background: var(--cream-dark); }
   .btn:disabled { opacity: 0.45; cursor: default; }
   .btn.primary { background: var(--navy); color: var(--cream); }
-  .btn.primary:hover { background: var(--navy-light); }
+  .btn.primary:not(:disabled):hover { background: var(--navy-light); }
   .btn.primary:disabled { opacity: 0.3; cursor: default; }
   .win-msg { text-align: center; padding: 1rem 0 0; font-family: 'Libre Baskerville', serif; font-size: 18px; color: var(--navy); display: none; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
@@ -67,6 +67,38 @@
   @media (max-width: 620px) {
     .hint-panel { top: 36px; width: min(448px, calc(100vw - 32px)); }
     .hint-visual { border-radius: 44px; }
+  }
+  @media (max-height: 760px) {
+    body { padding: 10px 1rem 12px; gap: 0.75rem; overflow: hidden; }
+    .game-section { max-width: min(540px, calc(100vw - 32px)); }
+    .book-label { font-size: 10px; margin-bottom: 3px; }
+    h2 { font-size: 21px; margin-bottom: 2px; }
+    .subtitle { font-size: 12px; margin-bottom: 0.7rem; }
+    .mistakes-row { gap: 6px; margin-bottom: 0.7rem; font-size: 12px; }
+    .dot { width: 10px; height: 10px; }
+    .solved-area { gap: 5px; margin-bottom: 6px; }
+    .solved-row { border-radius: 8px; padding: 9px 14px; }
+    .solved-row .cat-label { font-size: 9px; margin-bottom: 2px; }
+    .solved-row .cat-words { font-size: 12px; }
+    .grid { gap: 6px; margin-bottom: 0.7rem; }
+    .tile { height: clamp(46px, 9.5vh, 60px); border-radius: 8px; font-size: 12px; }
+    .msg { min-height: 16px; margin-bottom: 6px; font-size: 12px; }
+    .actions { gap: 8px; }
+    .btn { padding: 7px 16px; font-size: 12px; }
+    .win-msg { padding-top: 0.45rem; font-size: 15px; }
+    .hint-panel { top: 20px; width: min(390px, calc(100vw - 42px)); }
+    .hint-image { max-height: min(390px, 60vh); }
+  }
+  @media (max-height: 640px) {
+    body { padding-top: 8px; padding-bottom: 8px; }
+    .game-section { max-width: min(500px, calc(100vw - 32px)); }
+    h2 { font-size: 19px; }
+    .subtitle { margin-bottom: 0.55rem; }
+    .mistakes-row { margin-bottom: 0.55rem; }
+    .tile { height: clamp(40px, 8.8vh, 52px); font-size: 11px; }
+    .btn { padding: 6px 14px; }
+    .hint-panel { width: min(350px, calc(100vw - 42px)); }
+    .hint-image { max-height: min(350px, 58vh); }
   }
 </style>
 </head>
@@ -94,8 +126,8 @@
   <div class="grid" id="g2-grid"></div>
   <p class="msg" id="g2-msg"></p>
   <div class="actions">
-    <button class="btn" onclick="shuffleGame(game2State)">Shuffle</button>
-    <button class="btn" onclick="deselectAll(game2State)">Deselect all</button>
+    <button class="btn" id="g2-shuffle-btn" onclick="shuffleGame(game2State)">Shuffle</button>
+    <button class="btn" id="g2-deselect-btn" onclick="deselectAll(game2State)">Deselect all</button>
     <button class="btn" id="g2-hint-btn" onclick="toggleHint(game2State)">Hint</button>
     <button class="btn primary" id="g2-submit" onclick="submitGuess(game2State)" disabled>Submit</button>
   </div>
@@ -134,10 +166,11 @@ function renderGame(state) {
     t.onclick = () => toggleTile(state, word);
     grid.appendChild(t);
   });
-  document.getElementById(state.prefix + '-submit').disabled = state.selected.length !== 4;
+  document.getElementById(state.prefix + '-submit').disabled = isGameComplete(state) || state.selected.length !== 4;
 }
 
 function toggleTile(state, word) {
+  if (isGameComplete(state)) return;
   if (state.selected.includes(word)) {
     state.selected = state.selected.filter(w => w !== word);
   } else {
@@ -148,6 +181,7 @@ function toggleTile(state, word) {
 }
 
 function shuffleGame(state) {
+  if (isGameComplete(state)) return;
   state.remaining = [...state.remaining].sort(() => Math.random() - 0.5);
   state.selected = [];
   setMsg(state, '');
@@ -155,12 +189,14 @@ function shuffleGame(state) {
 }
 
 function deselectAll(state) {
+  if (isGameComplete(state)) return;
   state.selected = [];
   setMsg(state, '');
   renderGame(state);
 }
 
 function toggleHint(state) {
+  if (isGameComplete(state)) return;
   const panel = document.getElementById(state.prefix + '-hint');
   if (!panel) return;
   if (panel.classList.contains('visible')) {
@@ -235,7 +271,7 @@ function submitGuess(state) {
       state.solved.push(match);
       state.remaining = state.remaining.filter(w => !match.words.includes(w));
       state.selected = [];
-      if (state.solved.length === state.categories.length) {
+      if (isGameComplete(state)) {
         setMsg(state, '');
         document.getElementById(state.prefix + '-win').style.display = 'block';
       } else {
@@ -243,6 +279,7 @@ function submitGuess(state) {
       }
       renderGame(state);
       renderSolved(state);
+      if (isGameComplete(state)) endGame(state);
     }, 300);
   } else {
     const oneAway = state.categories.find(c =>
@@ -273,6 +310,7 @@ function revealAll(state) {
   });
   renderGame(state);
   renderSolved(state);
+  endGame(state);
 }
 
 function renderSolved(state) {
@@ -286,6 +324,18 @@ function renderSolved(state) {
     row.style.background = c.bg;
     row.innerHTML = `<div class="cat-label" style="color:${c.text}">${c.name}</div><div class="cat-words" style="color:${c.sub}">${c.words.join(' · ')}</div>`;
     area.appendChild(row);
+  });
+}
+
+function isGameComplete(state) {
+  return state.solved.length === state.categories.length;
+}
+
+function endGame(state) {
+  hideHint(state);
+  ['shuffle', 'deselect', 'hint', 'submit'].forEach(name => {
+    const button = document.getElementById(`${state.prefix}-${name}-btn`);
+    if (button) button.disabled = true;
   });
 }
 
