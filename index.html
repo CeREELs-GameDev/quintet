@@ -93,7 +93,7 @@
 
     .score {
       display: grid;
-      grid-template-columns: repeat(2, 104px);
+      grid-template-columns: 166px 112px 104px;
       gap: 10px;
     }
 
@@ -117,6 +117,40 @@
     .metric strong {
       font-size: clamp(22px, 2vw, 29px);
       line-height: 1;
+    }
+
+    .mistake-dots {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .mistake-dot,
+    .hint-dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--ink);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+    }
+
+    .hint-dots {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .hint-dot {
+      background: var(--gold);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.14),
+        0 0 10px rgba(241, 199, 91, 0.34);
+    }
+
+    .mistake-dot.used,
+    .hint-dot.used {
+      opacity: 0.18;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
     }
 
     .layout {
@@ -160,7 +194,7 @@
     .image-card {
       position: absolute;
       aspect-ratio: 585 / 1024;
-      height: 49%;
+      height: 45%;
       width: auto;
       overflow: hidden;
       border: clamp(3px, 0.36vw, 6px) solid rgba(255, 255, 255, 0.42);
@@ -182,53 +216,62 @@
       transition: filter 0.32s ease, transform 0.32s ease;
     }
 
-    .image-card.matched {
-      border-color: var(--gold);
-      box-shadow:
-        0 0 0 3px rgba(241, 199, 91, 0.22),
-        0 0 26px rgba(241, 199, 91, 0.62),
-        0 24px 48px rgba(0, 0, 0, 0.36);
-      animation: imagePulse 0.72s ease;
+    .placeholder {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.08), transparent 36%),
+        linear-gradient(180deg, rgba(52, 56, 95, 0.62), rgba(9, 14, 28, 0.94));
+      color: rgba(255, 255, 255, 0.32);
+      font-size: clamp(48px, 6vw, 76px);
+      font-weight: 300;
     }
+
+    .image-card.matched {
+      box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.12),
+        0 0 26px color-mix(in srgb, var(--group-color, var(--gold)) 58%, transparent),
+        0 24px 48px rgba(0, 0, 0, 0.36);
+      animation: imagePulse 1s ease;
+    }
+
+    .image-card.group-a.matched { border-color: #f1c75b; --group-color: #f1c75b; }
+    .image-card.group-b.matched { border-color: #74c69d; --group-color: #74c69d; }
+    .image-card.group-c.matched { border-color: #ff9f7a; --group-color: #ff9f7a; }
+    .image-card.group-d.matched { border-color: #8ea7ff; --group-color: #8ea7ff; }
 
     .image-card.matched img {
       filter: saturate(1.14) brightness(1.07);
     }
 
-    .image-card.know {
-      left: 10%;
-      top: 2.5%;
-      rotate: -1.2deg;
-      z-index: 1;
-    }
-
-    .image-card.think {
-      right: 10%;
-      top: 2.5%;
-      rotate: 1.2deg;
-      z-index: 1;
-    }
-
-    .image-card.wonder {
-      left: 50%;
-      top: 24%;
-      height: 52%;
-      translate: -50% 0;
-      z-index: 3;
-    }
-
-    .image-card.imagine {
-      left: 10%;
-      bottom: 2.5%;
-      rotate: 1deg;
+    .image-card.group-a {
+      left: 14%;
+      top: 4%;
+      rotate: -0.6deg;
       z-index: 2;
     }
 
-    .image-card.picture {
-      right: 10%;
-      bottom: 2.5%;
-      rotate: -1deg;
-      z-index: 2;
+    .image-card.group-b {
+      right: 14%;
+      top: 4%;
+      rotate: 0.6deg;
+      z-index: 1;
+    }
+
+    .image-card.group-c {
+      left: 14%;
+      bottom: 4%;
+      rotate: 0.5deg;
+      z-index: 1;
+    }
+
+    .image-card.group-d {
+      right: 14%;
+      bottom: 4%;
+      rotate: -0.5deg;
+      z-index: 1;
     }
 
     .reward-video {
@@ -296,8 +339,8 @@
 
     .word-grid {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      grid-template-rows: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-rows: repeat(4, minmax(0, 1fr));
       gap: clamp(10px, 1.55vh, 22px) clamp(8px, 1vw, 16px);
       align-content: stretch;
       min-height: 0;
@@ -338,13 +381,96 @@
     }
 
     .card.correct {
-      border-color: var(--gold);
-      background: linear-gradient(180deg, #f8d967, #d5a82d);
-      color: #111006;
+      border-color: color-mix(in srgb, var(--solved-color, var(--gold)) 72%, white);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--solved-color, var(--gold)) 92%, white), var(--solved-color, var(--gold)));
+      color: #10131b;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26);
+      pointer-events: none;
+    }
+
+    .card.group-a.correct { --solved-color: #f1c75b; }
+    .card.group-b.correct { --solved-color: #74c69d; }
+    .card.group-c.correct { --solved-color: #ff9f7a; }
+    .card.group-d.correct { --solved-color: #8ea7ff; }
+
+    .solved-row {
+      grid-column: 1 / -1;
+      min-height: 0;
+      height: 100%;
+      border: 2px solid color-mix(in srgb, var(--solved-color, var(--gold)) 70%, white);
+      border-radius: 16px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--solved-color, var(--gold)) 92%, white), var(--solved-color, var(--gold)));
+      color: #10131b;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 8px 12px;
       box-shadow:
-        0 0 0 3px rgba(241, 199, 91, 0.24),
-        0 0 22px rgba(241, 199, 91, 0.62);
-      animation: cardPop 0.45s ease;
+        inset 0 1px 0 rgba(255, 255, 255, 0.32),
+        0 10px 24px rgba(0, 0, 0, 0.22);
+    }
+
+    .solved-row.just-solved-row {
+      animation: rowReveal 0.82s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .solved-row strong {
+      display: block;
+      font-size: clamp(13px, 1vw, 17px);
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+
+    .solved-row span {
+      display: block;
+      margin-top: 4px;
+      font-size: clamp(11px, 0.88vw, 14px);
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .solved-row.group-a { --solved-color: #f1c75b; }
+    .solved-row.group-b { --solved-color: #74c69d; }
+    .solved-row.group-c { --solved-color: #ff9f7a; }
+    .solved-row.group-d { --solved-color: #8ea7ff; }
+
+    .word-grid.reward-focus .solved-row {
+      border-color: rgba(255, 255, 255, 0.16);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.045));
+      color: rgba(248, 247, 241, 0.46);
+      filter: saturate(0.08) brightness(0.84);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition:
+        border-color 0.34s ease,
+        background 0.34s ease,
+        color 0.34s ease,
+        filter 0.34s ease,
+        box-shadow 0.34s ease,
+        opacity 0.34s ease;
+    }
+
+    .word-grid.reward-focus .solved-row.reward-target {
+      border-color: color-mix(in srgb, var(--solved-color, var(--gold)) 72%, white);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--solved-color, var(--gold)) 92%, white), var(--solved-color, var(--gold)));
+      color: #10131b;
+      filter: none;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.34),
+        0 0 0 3px color-mix(in srgb, var(--solved-color, var(--gold)) 22%, transparent),
+        0 0 30px color-mix(in srgb, var(--solved-color, var(--gold)) 64%, transparent),
+        0 18px 38px rgba(0, 0, 0, 0.3);
+      animation: rewardGroupGlow 1.65s ease-in-out infinite;
+    }
+
+    .card.just-solved {
+      animation: cardSettle 1s ease;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.26),
+        0 0 0 3px color-mix(in srgb, var(--solved-color, var(--gold)) 32%, transparent),
+        0 0 20px color-mix(in srgb, var(--solved-color, var(--gold)) 56%, transparent);
+    }
+
+    .card.resolving {
       pointer-events: none;
     }
 
@@ -353,16 +479,22 @@
     }
 
     .card.hinted::after {
-      content: "★";
+      content: "";
       position: absolute;
-      top: 5px;
-      right: 8px;
-      color: var(--gold);
-      font-size: 13px;
-      line-height: 1;
-      text-shadow: 0 0 10px rgba(241, 199, 91, 0.8);
+      top: 8px;
+      right: 9px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--hint-color, var(--gold));
+      box-shadow: 0 0 12px color-mix(in srgb, var(--hint-color, var(--gold)) 72%, transparent);
       pointer-events: none;
     }
+
+    .card.group-a.hinted { --hint-color: #f1c75b; }
+    .card.group-b.hinted { --hint-color: #74c69d; }
+    .card.group-c.hinted { --hint-color: #ff9f7a; }
+    .card.group-d.hinted { --hint-color: #8ea7ff; }
 
     .card.wrong {
       border-color: rgba(255, 122, 122, 0.8);
@@ -419,7 +551,7 @@
       }
 
       .score {
-        grid-template-columns: repeat(2, 86px);
+        grid-template-columns: 138px 84px 78px;
         gap: 8px;
       }
 
@@ -444,27 +576,23 @@
       }
 
       .image-card {
-        height: min(49%, 23vw);
+        height: min(45%, 22vw);
       }
 
-      .image-card.know {
-        left: 7%;
+      .image-card.group-a {
+        left: 10%;
       }
 
-      .image-card.think {
-        right: 7%;
+      .image-card.group-b {
+        right: 10%;
       }
 
-      .image-card.wonder {
-        height: min(52%, 24vw);
+      .image-card.group-c {
+        left: 10%;
       }
 
-      .image-card.imagine {
-        left: 7%;
-      }
-
-      .image-card.picture {
-        right: 7%;
+      .image-card.group-d {
+        right: 10%;
       }
 
       .word-grid {
@@ -483,7 +611,7 @@
       }
     }
 
-    @media (max-width: 900px) and (orientation: portrait) {
+    @media (max-width: 720px) and (orientation: portrait) {
       body {
         overflow: auto;
       }
@@ -497,7 +625,7 @@
       }
 
       .top {
-        grid-template-columns: 1fr auto;
+        grid-template-columns: 1fr;
         align-items: center;
         box-shadow: none;
       }
@@ -513,7 +641,9 @@
       }
 
       .score {
-        grid-template-columns: repeat(2, minmax(66px, 78px));
+        width: 100%;
+        grid-template-columns: minmax(116px, 1fr) minmax(68px, 0.66fr) minmax(68px, 0.66fr);
+        gap: 6px;
       }
 
       .metric {
@@ -540,31 +670,26 @@
       }
 
       .image-card {
-        height: 56%;
+        height: 46%;
       }
 
-      .image-card.know {
-        left: 7%;
+      .image-card.group-a {
+        left: 10%;
         top: 3%;
       }
 
-      .image-card.think {
-        right: 7%;
+      .image-card.group-b {
+        right: 10%;
         top: 3%;
       }
 
-      .image-card.wonder {
-        top: 20%;
-        height: 60%;
-      }
-
-      .image-card.imagine {
-        left: 7%;
+      .image-card.group-c {
+        left: 10%;
         bottom: 3%;
       }
 
-      .image-card.picture {
-        right: 7%;
+      .image-card.group-d {
+        right: 10%;
         bottom: 3%;
       }
 
@@ -573,16 +698,21 @@
       }
 
       .word-grid {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        grid-template-rows: repeat(5, minmax(48px, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-rows: repeat(4, minmax(54px, 1fr));
         gap: 8px 6px;
       }
 
       .card {
-        min-height: 48px;
+        min-height: 54px;
         padding: 0 3px;
         border-radius: 12px;
         font-size: clamp(10px, 3vw, 13px);
+      }
+
+      .solved-row {
+        min-height: 54px;
+        border-radius: 12px;
       }
 
       .controls {
@@ -608,6 +738,11 @@
         padding: 7px 10px;
       }
 
+      .score {
+        grid-template-columns: 126px 74px 70px;
+        gap: 6px;
+      }
+
       .eyebrow,
       .subtitle {
         display: none;
@@ -623,31 +758,26 @@
       }
 
       .image-card {
-        height: min(50%, 22vw);
+        height: min(45%, 20vw);
       }
 
-      .image-card.know {
-        left: 7%;
+      .image-card.group-a {
+        left: 10%;
         top: 2%;
       }
 
-      .image-card.think {
-        right: 7%;
+      .image-card.group-b {
+        right: 10%;
         top: 2%;
       }
 
-      .image-card.wonder {
-        top: 23%;
-        height: min(54%, 24vw);
-      }
-
-      .image-card.imagine {
-        left: 7%;
+      .image-card.group-c {
+        left: 10%;
         bottom: 2%;
       }
 
-      .image-card.picture {
-        right: 7%;
+      .image-card.group-d {
+        right: 10%;
         bottom: 2%;
       }
 
@@ -672,10 +802,38 @@
       }
     }
 
-    @keyframes cardPop {
-      0% { transform: scale(1); }
-      45% { transform: scale(1.08); }
-      100% { transform: scale(1); }
+    @keyframes cardSettle {
+      0% { filter: brightness(1); }
+      35% { filter: brightness(1.18); }
+      100% { filter: brightness(1); }
+    }
+
+    @keyframes rowReveal {
+      0% {
+        opacity: 0.55;
+        transform: translateY(10px) scale(0.985);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes rewardGroupGlow {
+      0%, 100% {
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.34),
+          0 0 0 3px color-mix(in srgb, var(--solved-color, var(--gold)) 20%, transparent),
+          0 0 24px color-mix(in srgb, var(--solved-color, var(--gold)) 52%, transparent),
+          0 18px 38px rgba(0, 0, 0, 0.3);
+      }
+      50% {
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.42),
+          0 0 0 5px color-mix(in srgb, var(--solved-color, var(--gold)) 30%, transparent),
+          0 0 42px color-mix(in srgb, var(--solved-color, var(--gold)) 76%, transparent),
+          0 20px 46px rgba(0, 0, 0, 0.34);
+      }
     }
 
     @keyframes cardShake {
@@ -705,28 +863,26 @@
         <h1>Quintet</h1>
       </div>
       <div class="score">
-        <div class="metric"><div><small>LIFE</small><strong><span id="lifeCount">5</span></strong></div></div>
-        <div class="metric"><div><small>PICKS</small><strong><span id="pickCount">0</span>/5</strong></div></div>
+        <div class="metric"><div><small>MISTAKES REMAINING</small><div class="mistake-dots" id="mistakeDots"></div></div></div>
+        <div class="metric"><div><small>HINTS</small><div class="hint-dots" id="hintDots"></div></div></div>
+        <div class="metric"><div><small>PICKS</small><strong><span id="pickCount">0</span>/4</strong></div></div>
       </div>
     </section>
 
     <section class="layout">
       <section class="visual-zone" id="visualZone" aria-label="word image area">
         <div class="image-board">
-          <div class="image-card know" data-image-card="know">
-            <img src="assets/know.png" alt="know visual clue" />
+          <div class="image-card group-a" data-image-card="group-a">
+            <img src="assets/think.png" alt="group A visual clue" />
         </div>
-        <div class="image-card think" data-image-card="think">
-          <img src="assets/think.png" alt="think visual clue" />
+        <div class="image-card group-b" data-image-card="group-b">
+          <div class="placeholder">B</div>
         </div>
-        <div class="image-card wonder" data-image-card="wonder">
-          <img src="assets/wonder.png" alt="wonder visual clue" />
+        <div class="image-card group-c" data-image-card="group-c">
+          <div class="placeholder">C</div>
         </div>
-        <div class="image-card imagine" data-image-card="imagine">
-          <img src="assets/imagine.png" alt="imagine visual clue" />
-        </div>
-        <div class="image-card picture" data-image-card="picture">
-          <img src="assets/picture.png" alt="picture visual clue" />
+        <div class="image-card group-d" data-image-card="group-d">
+          <div class="placeholder">D</div>
         </div>
         </div>
         <video class="reward-video" id="rewardVideo" src="assets/reward.mp4" playsinline preload="auto"></video>
@@ -745,17 +901,29 @@
   </main>
 
   <script>
+    const groups = {
+      "group-a": ["wonder", "picture", "imagine", "know"],
+      "group-b": ["X1", "X2", "X3", "X4"],
+      "group-c": ["Y1", "Y2", "Y3", "Y4"],
+      "group-d": ["Z1", "Z2", "Z3", "Z4"]
+    };
+
+    const groupLabels = {
+      "group-a": "MIND'S EYE",
+      "group-b": "GROUP B",
+      "group-c": "GROUP C",
+      "group-d": "GROUP D"
+    };
+
+    const maxMistakes = 4;
+    const maxHints = 3;
+    const rewardGroup = "group-a";
+
     const target = {
-      words: ["know", "think", "wonder", "imagine", "picture"],
-      options: [
-        "know", "think", "wonder", "imagine", "picture",
-        "say", "tell", "speak", "whisper", "murmur",
-        "look", "watch", "listen", "ask", "answer",
-        "learn", "guess", "believe", "decide", "notice",
-        "remember", "dream", "draw", "paint", "read"
-      ],
-      hint: "말하기나 보기 동사가 아니라, 머릿속에서 이해·판단·상상·이미지를 만드는 동사만 고르기.",
-      reason: "책에서 이해가 열리는 know, 생각에 잠긴 think, 물음표와 우주를 바라보는 wonder, 꿈속 세계의 imagine, 붓으로 장면을 만드는 picture."
+      options: Object.entries(groups).flatMap(([group, words]) =>
+        words.map((word, index) => ({ id: `${group}-${index}`, word, group }))
+      ),
+      hint: "같은 그룹으로 묶이는 네 단어를 고르기."
     };
 
     const wordGrid = document.getElementById("wordGrid");
@@ -763,7 +931,8 @@
     const submit = document.getElementById("submit");
     const hint = document.getElementById("hint");
     const reset = document.getElementById("reset");
-    const lifeCount = document.getElementById("lifeCount");
+    const mistakeDots = document.getElementById("mistakeDots");
+    const hintDots = document.getElementById("hintDots");
     const pickCount = document.getElementById("pickCount");
     const visualZone = document.getElementById("visualZone");
     const rewardVideo = document.getElementById("rewardVideo");
@@ -772,29 +941,38 @@
     let matched = new Set();
     let lockedWrong = new Set();
     let submittedCombos = new Set();
-    let lives = 5;
+    let mistakesRemaining = maxMistakes;
+    let hintsRemaining = maxHints;
     let revealedHints = new Set();
     let cardWords = [];
     let solved = false;
+    let solvedGroups = new Set();
+    let solvedGroupOrder = [];
+    let resolving = false;
+    let solveTimer = null;
     let messageTimer = null;
 
     submit.addEventListener("click", submitAnswer);
-    hint.addEventListener("click", () => {
-      setMessage(target.hint, 3600);
-    });
-    reset.addEventListener("click", start);
+    hint.addEventListener("click", useHint);
+    reset.addEventListener("click", clearSelection);
 
     function start() {
       selected = new Set();
       matched = new Set();
       lockedWrong = new Set();
       submittedCombos = new Set();
-      lives = 5;
+      mistakesRemaining = maxMistakes;
+      hintsRemaining = maxHints;
       revealedHints = new Set();
       solved = false;
+      solvedGroups = new Set();
+      solvedGroupOrder = [];
+      resolving = false;
+      window.clearTimeout(solveTimer);
       cardWords = shuffle(target.options);
       hideMessage();
       visualZone.classList.remove("rewarding");
+      clearRewardFocus();
       rewardVideo.pause();
       rewardVideo.currentTime = 0;
       document.querySelectorAll("[data-image-card]").forEach(card => {
@@ -803,48 +981,72 @@
       renderCards();
     }
 
-    function renderCards() {
+    function renderCards(options = {}) {
+      const { animate = false, justSolvedIds = new Set(), resolvingIds = new Set(), justSolvedGroup = null } = options;
+      const oldRects = new Map();
+      if (animate) {
+        document.querySelectorAll(".card").forEach(card => {
+          oldRects.set(card.dataset.cardId, card.getBoundingClientRect());
+        });
+      }
+
       wordGrid.innerHTML = "";
-      cardWords.forEach(word => {
+      solvedGroupOrder.forEach(group => {
+        const row = document.createElement("div");
+        row.className = `solved-row ${group}`;
+        if (group === justSolvedGroup) row.classList.add("just-solved-row");
+        row.dataset.group = group;
+        row.innerHTML = `<strong>${groupLabels[group]}</strong><span>${groups[group].join(" · ")}</span>`;
+        wordGrid.appendChild(row);
+      });
+
+      cardWords.filter(card => !solvedGroups.has(card.group)).forEach(card => {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "card";
-        button.dataset.word = word;
-        button.innerHTML = `<span class="card-label">${word}</span>`;
-        if (selected.has(word)) button.classList.add("selected");
-        if (revealedHints.has(word)) button.classList.add("hinted");
-        if (matched.has(word)) button.classList.add("correct");
-        if (lockedWrong.has(word)) button.classList.add("wrong");
-        button.addEventListener("click", () => toggleWord(word));
+        button.className = `card ${card.group}`;
+        button.dataset.cardId = card.id;
+        button.dataset.word = card.word;
+        button.dataset.group = card.group;
+        button.innerHTML = `<span class="card-label">${card.word}</span>`;
+        if (selected.has(card.id)) button.classList.add("selected");
+        if (revealedHints.has(card.id)) button.classList.add("hinted");
+        if (matched.has(card.id)) button.classList.add("correct");
+        if (justSolvedIds.has(card.id)) button.classList.add("just-solved");
+        if (resolvingIds.has(card.id)) button.classList.add("resolving");
+        if (lockedWrong.has(card.id)) button.classList.add("wrong");
+        button.addEventListener("click", () => toggleWord(card.id));
         wordGrid.appendChild(button);
       });
-      lifeCount.textContent = lives;
+      renderMistakes();
+      renderHints();
       pickCount.textContent = selected.size;
-      submit.disabled = selected.size !== 5 || solved;
+      submit.disabled = resolving || selected.size !== 4 || solvedGroups.size === Object.keys(groups).length;
+      hint.disabled = resolving || solved || hintsRemaining <= 0 || !hasHintCandidate();
+      if (animate) animateCardsFrom(oldRects);
     }
 
-    function toggleWord(word) {
-      if (solved) return;
-      if (!selected.has(word) && selected.size >= 5) {
-        setMessage("이미 5개를 골랐음. 다른 단어를 빼고 다시 선택.", 1600);
+    function toggleWord(cardId) {
+      if (solved || resolving || matched.has(cardId)) return;
+      if (!selected.has(cardId) && selected.size >= 4) {
+        setMessage("이미 4개를 골랐음. 다른 단어를 빼고 다시 선택.", 1600);
         return;
       }
       lockedWrong.clear();
-      if (selected.has(word)) {
-        selected.delete(word);
-      } else if (selected.size < 5) {
-        selected.add(word);
+      if (selected.has(cardId)) {
+        selected.delete(cardId);
+      } else if (selected.size < 4) {
+        selected.add(cardId);
       }
-      if (selected.size === 5) {
-        setMessage("5개 선택 완료. Submit으로 확인.", 1400);
+      if (selected.size === 4) {
+        setMessage("4개 선택 완료. Submit으로 확인.", 1400);
       } else {
         hideMessage();
       }
       renderCards();
     }
 
-    function matchImage(word) {
-      const card = document.querySelector(`[data-image-card="${word}"]`);
+    function matchImage(group) {
+      const card = document.querySelector(`[data-image-card="${group}"]`);
       if (!card) return;
       card.classList.remove("matched");
       void card.offsetWidth;
@@ -852,11 +1054,11 @@
     }
 
     function submitAnswer() {
-      const selectedWords = [...selected];
-      const comboKey = selectedWords.slice().sort().join("|");
+      const selectedIds = [...selected];
+      const comboKey = selectedIds.slice().sort().join("|");
       if (submittedCombos.has(comboKey)) {
         setMessage("Already tried. Pick a different set.", 1800);
-        lockedWrong = new Set(selectedWords);
+        lockedWrong = new Set(selectedIds);
         renderCards();
         window.setTimeout(() => {
           lockedWrong.clear();
@@ -865,39 +1067,196 @@
         return;
       }
       submittedCombos.add(comboKey);
-      const allCorrect = target.words.every(word => selected.has(word));
+      const selectedCards = selectedIds.map(id => cardWords.find(card => card.id === id));
+      const selectedGroups = new Set(selectedCards.map(card => card && card.group));
+      const solvedGroup = selectedCards[0] && selectedCards[0].group;
+      const allCorrect = selectedGroups.size === 1 && solvedGroup && !solvedGroups.has(solvedGroup);
       if (allCorrect) {
-        solved = true;
-        matched = new Set(target.words);
-        target.words.forEach(matchImage);
-        setMessage("Correct. Quintet found.", 1800);
-        window.setTimeout(playReward, 1500);
+        resolving = true;
+        selectedIds.forEach(id => matched.add(id));
+        selected.clear();
+        moveGroupToFront(solvedGroup);
+        matchImage(solvedGroup);
+        setMessage(`Correct. ${groupLabels[solvedGroup]} found.`, 1800);
+        solveTimer = window.setTimeout(() => {
+          finalizeSolvedGroup(solvedGroup);
+        }, 1180);
       } else {
-        lives = Math.max(0, lives - 1);
-        lockedWrong = new Set(selectedWords);
-        if (lives === 0) revealNextHint();
-        setMessage(lives === 0
-          ? `${revealedHints.size}/5 answer card revealed.`
-          : `Not quite. ${lives} life left.`, 1800);
+        if (mistakesRemaining > 0) mistakesRemaining -= 1;
+        lockedWrong = new Set(selectedIds);
+        const oneAway = getLargestGroupCount(selectedCards) === 3;
+        setMessage(getWrongMessage(oneAway), 1800);
         window.setTimeout(() => {
           lockedWrong.clear();
           renderCards();
         }, 420);
       }
+      renderCards(allCorrect
+        ? { animate: true, justSolvedIds: new Set(selectedIds), resolvingIds: new Set(selectedIds) }
+        : {});
+    }
+
+    function useHint() {
+      if (solved || resolving || hintsRemaining <= 0) return;
+      const revealed = revealPairHint();
+      if (!revealed) {
+        renderCards();
+        return;
+      }
+      hintsRemaining -= 1;
+      selected.clear();
+      lockedWrong.clear();
+      hideMessage();
       renderCards();
     }
 
-    function revealNextHint() {
-      const nextHint = target.words.find(word => !revealedHints.has(word));
-      if (!nextHint) return;
-      revealedHints.add(nextHint);
+    function revealPairHint() {
+      const hintGroup = getHintCandidateGroup();
+      if (!hintGroup) return false;
+      const hintCards = cardWords
+        .filter(card => card.group === hintGroup && !revealedHints.has(card.id))
+        .slice(0, 2);
+      hintCards.forEach(card => revealedHints.add(card.id));
+      return hintCards.length > 0;
+    }
+
+    function hasHintCandidate() {
+      return Boolean(getHintCandidateGroup());
+    }
+
+    function getHintCandidateGroup() {
+      const unsolvedGroups = Object.keys(groups).filter(group => !solvedGroups.has(group));
+      const freshGroup = unsolvedGroups.find(group => {
+        const groupCards = cardWords.filter(card => card.group === group);
+        const revealedCount = groupCards.filter(card => revealedHints.has(card.id)).length;
+        return revealedCount === 0 && groupCards.length >= 2;
+      });
+      if (freshGroup) return freshGroup;
+      return unsolvedGroups.find(group =>
+        cardWords.filter(card => card.group === group && !revealedHints.has(card.id)).length >= 2
+      );
+    }
+
+    function clearSelection() {
+      if (resolving) return;
+      if (selected.size === 0 && lockedWrong.size === 0) return;
+      selected.clear();
+      lockedWrong.clear();
+      hideMessage();
+      renderCards();
+    }
+
+    function finalizeSolvedGroup(group) {
+      if (solvedGroups.has(group)) return;
+      solvedGroups.add(group);
+      solvedGroupOrder.push(group);
+      resolving = false;
+      reorderCards();
+      renderCards({ justSolvedGroup: group });
+      if (solvedGroups.size === Object.keys(groups).length) {
+        solved = true;
+        window.setTimeout(playReward, 1100);
+      }
+    }
+
+    function moveGroupToFront(group) {
+      const groupCards = groups[group]
+        .map((word, index) => cardWords.find(card => card.id === `${group}-${index}` && card.word === word))
+        .filter(Boolean);
+      const remainingCards = cardWords.filter(card => card.group !== group);
+      cardWords = [...groupCards, ...remainingCards];
+    }
+
+    function reorderCards() {
+      const remainingCards = cardWords.filter(card => !solvedGroups.has(card.group));
+      cardWords = [...remainingCards];
+    }
+
+    function animateCardsFrom(oldRects) {
+      const cards = [...wordGrid.querySelectorAll(".card")];
+      cards.forEach(card => {
+        const oldRect = oldRects.get(card.dataset.cardId);
+        if (!oldRect) return;
+        const newRect = card.getBoundingClientRect();
+        const dx = oldRect.left - newRect.left;
+        const dy = oldRect.top - newRect.top;
+        if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+        card.style.transition = "none";
+        card.style.transform = `translate(${dx}px, ${dy}px)`;
+      });
+      void wordGrid.offsetWidth;
+      cards.forEach(card => {
+        if (!card.style.transform) return;
+        card.style.transition = "transform 1000ms cubic-bezier(0.22, 1, 0.36, 1), border-color 0.18s ease, background 0.18s ease";
+        card.style.transform = "";
+      });
+      window.setTimeout(() => {
+        cards.forEach(card => {
+          card.style.transition = "";
+          card.style.transform = "";
+        });
+      }, 1080);
+    }
+
+    function getLargestGroupCount(cards) {
+      const counts = cards.reduce((acc, card) => {
+        if (!card || solvedGroups.has(card.group)) return acc;
+        acc[card.group] = (acc[card.group] || 0) + 1;
+        return acc;
+      }, {});
+      return Math.max(0, ...Object.values(counts));
+    }
+
+    function getWrongMessage(oneAway) {
+      if (mistakesRemaining === 0) {
+        return oneAway
+          ? "One away. No mistakes remaining."
+          : "Not quite. No mistakes remaining.";
+      }
+      return oneAway ? "One away." : "Not quite.";
+    }
+
+    function renderMistakes() {
+      mistakeDots.innerHTML = "";
+      for (let i = 0; i < maxMistakes; i += 1) {
+        const dot = document.createElement("span");
+        dot.className = "mistake-dot";
+        if (i >= mistakesRemaining) dot.classList.add("used");
+        mistakeDots.appendChild(dot);
+      }
+    }
+
+    function renderHints() {
+      hintDots.innerHTML = "";
+      for (let i = 0; i < maxHints; i += 1) {
+        const dot = document.createElement("span");
+        dot.className = "hint-dot";
+        if (i >= hintsRemaining) dot.classList.add("used");
+        hintDots.appendChild(dot);
+      }
     }
 
     function playReward() {
       visualZone.classList.add("rewarding");
+      focusRewardGroup(rewardGroup);
       rewardVideo.currentTime = 0;
       rewardVideo.play().catch(() => {
         setMessage("Quintet complete. Tap the video area if playback is blocked.", 2400);
+      });
+    }
+
+    function focusRewardGroup(group) {
+      wordGrid.classList.add("reward-focus");
+      wordGrid.querySelectorAll(".solved-row").forEach(row => {
+        row.classList.remove("just-solved-row");
+        row.classList.toggle("reward-target", row.dataset.group === group);
+      });
+    }
+
+    function clearRewardFocus() {
+      wordGrid.classList.remove("reward-focus");
+      wordGrid.querySelectorAll(".solved-row").forEach(row => {
+        row.classList.remove("reward-target");
       });
     }
 
